@@ -6,5 +6,5 @@ public class Product {
     private int inventoryNr;
     private int stock;
     private double tax; 
-    // test Fabian
+    //philipp
 }

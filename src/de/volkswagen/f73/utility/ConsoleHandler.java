@@ -2,7 +2,7 @@ package de.volkswagen.f73.utility;
 
 /**
  * 
- * @author Fabian Dürkop
+ * @author Fabian Dï¿½rkop
  */
 public class ConsoleHandler {
 
@@ -27,7 +27,7 @@ public class ConsoleHandler {
         // Login / Register
         // while
         // Produkte anzeigen
-        // Produkt auswählen
+        // Produkt auswï¿½hlen
         printWelcome();
         printLogin();
         printReceipt(0);
@@ -88,8 +88,8 @@ public class ConsoleHandler {
      * .
      * .
      * .
-     * Warenkorb:   4 Artikel | 12.30€
-     * Seite 1/10     x: nächste Seite
+     * Warenkorb:   4 Artikel | 12.30ï¿½
+     * Seite 1/10     x: nï¿½chste Seite
      */
 
     private void printReceipt(int page) {
@@ -107,11 +107,11 @@ public class ConsoleHandler {
             System.out.println(stringToConsole("" + i + ") " + sData[i * (page + 1)], Alignment.LEFT, BORDER));
         }
         String sLeft = "Warenkorb  " + iProductCnt + " Artikel";
-        String sRight = dValue + "€";
+        String sRight = dValue + "ï¿½";
         System.out.println(stringToConsole(sLeft + addPadding(sLeft.length(), sRight.length(), BORDER) + sRight, Alignment.CENTER, BORDER));
         
         sLeft = "Seite " + (page+1) + "/" + ((int)Math.ceil(sData.length/4) + 1);
-        sRight = "n) nächste Seite  x) zurück";
+        sRight = "n) nï¿½chste Seite  x) zurï¿½ck";
         System.out.println(stringToConsole( sLeft + addPadding(sLeft.length(), sRight.length(), BORDER) + sRight, Alignment.CENTER, BORDER));
         System.out.println(wholeLine('-', WIDTH, Alignment.CENTER, NO_BORDER));
     }
@@ -240,5 +240,8 @@ public class ConsoleHandler {
         /**
          * |--------------------------| | Error | |--------------------------|
          */
+        System.out.println(wholeLine('-', WIDTH, Alignment.CENTER, NO_BORDER));
+        System.out.println(stringToConsole(errorMessage, Alignment.CENTER, BORDER));
+        System.out.println(wholeLine('-', WIDTH, Alignment.CENTER, NO_BORDER));
     }
 }
