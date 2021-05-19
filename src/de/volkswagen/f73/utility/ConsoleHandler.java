@@ -50,7 +50,7 @@ public class ConsoleHandler {
         System.out.println(wholeLine(' ', WIDTH-2, Alignment.CENTER, BORDER));
         System.out.println(wholeLine(' ', WIDTH-2, Alignment.CENTER, BORDER));
         System.out.println(stringToConsole("Welcome", Alignment.CENTER, BORDER));
-        System.out.println(wholeLine(' ', WIDTH-2, Alignment.CENTER, BORDER));
+        System.out.println(wholeLine('-', "Welcome".length(), Alignment.CENTER, BORDER));
         System.out.println(wholeLine(' ', WIDTH-2, Alignment.CENTER, BORDER));
         System.out.println(wholeLine(' ', WIDTH-2, Alignment.CENTER, BORDER));
         System.out.println(wholeLine('-', WIDTH, Alignment.CENTER, NO_BORDER));
@@ -176,5 +176,8 @@ public class ConsoleHandler {
         /**
          * |--------------------------| | Error | |--------------------------|
          */
+        System.out.println(wholeLine('-', WIDTH, Alignment.CENTER, NO_BORDER));
+        System.out.println(stringToConsole(errorMessage, Alignment.CENTER, BORDER));
+        System.out.println(wholeLine('-', WIDTH, Alignment.CENTER, NO_BORDER));
     }
 }
