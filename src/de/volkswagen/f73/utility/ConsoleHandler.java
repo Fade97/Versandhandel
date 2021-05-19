@@ -1,31 +1,20 @@
 package de.volkswagen.f73.utility;
 
 /**
- * Produkte
- * _______________________________
- * 1) Banane
- * 2) Erdbeere
- * .
- * .
- * .
- * Warenkorb:   4 Artikel | 12.30€
- * Seite 1/10     x: nächste Seite
- */
-
-/**
  * 
- * @author Fabian Dürkop 
+ * @author Fabian Dürkop
  */
 public class ConsoleHandler {
 
     private static int WIDTH = 55;
-    private static int HEIGHT = 9;
-    
+    private static int HEIGHT = 10;
+
     private static boolean BORDER = true;
     private static boolean NO_BORDER = false;
 
     /**
-     * Possible alignment options
+     * Possible alignment options 
+     * <p>
      * LEFT, CENTER, RIGHT
      * 
      */
@@ -41,32 +30,29 @@ public class ConsoleHandler {
         // Produkt auswählen
         printWelcome();
         printLogin();
-
+        printReceipt(0);
     }
 
     private void printWelcome() {
         System.out.println(wholeLine('-', WIDTH, Alignment.CENTER, NO_BORDER));
-        System.out.println(wholeLine(' ', WIDTH-2, Alignment.CENTER, BORDER));
-        System.out.println(wholeLine(' ', WIDTH-2, Alignment.CENTER, BORDER));
-        System.out.println(wholeLine(' ', WIDTH-2, Alignment.CENTER, BORDER));
+        System.out.println(wholeLineMulti(' ', WIDTH - 2, Alignment.CENTER, BORDER, (int)(Math.floor((HEIGHT - 4) / 2.0))));
+        
         System.out.println(stringToConsole("Welcome", Alignment.CENTER, BORDER));
-        System.out.println(wholeLine(' ', WIDTH-2, Alignment.CENTER, BORDER));
-        System.out.println(wholeLine(' ', WIDTH-2, Alignment.CENTER, BORDER));
-        System.out.println(wholeLine(' ', WIDTH-2, Alignment.CENTER, BORDER));
+        System.out.println(wholeLine('-', 7, Alignment.CENTER, BORDER));
+        
+        System.out.println(wholeLineMulti(' ', WIDTH - 2, Alignment.CENTER, BORDER, (int)(Math.ceil((HEIGHT - 4) / 2.0))));
         System.out.println(wholeLine('-', WIDTH, Alignment.CENTER, NO_BORDER));
 
     }
 
     private boolean printLogin() {
-        
+
         System.out.println(wholeLine('-', WIDTH, Alignment.CENTER, NO_BORDER));
-        System.out.println(wholeLine(' ', WIDTH-2, Alignment.CENTER, BORDER));
-        System.out.println(wholeLine(' ', WIDTH-2, Alignment.CENTER, BORDER));
-        System.out.println(wholeLine(' ', WIDTH-2, Alignment.CENTER, BORDER));
+        System.out.println(wholeLineMulti(' ', WIDTH - 2, Alignment.CENTER, BORDER, (int)(Math.floor((HEIGHT - 3) / 2.0))));
+        
         System.out.println(stringToConsole("Login", Alignment.CENTER, BORDER));
-        System.out.println(wholeLine(' ', WIDTH-2, Alignment.CENTER, BORDER));
-        System.out.println(wholeLine(' ', WIDTH-2, Alignment.CENTER, BORDER));
-        System.out.println(wholeLine(' ', WIDTH-2, Alignment.CENTER, BORDER));
+        
+        System.out.println(wholeLineMulti(' ', WIDTH - 2, Alignment.CENTER, BORDER, (int)(Math.ceil((HEIGHT - 3) / 2.0))));        
         System.out.println(wholeLine('-', WIDTH, Alignment.CENTER, NO_BORDER));
         return false;
     }
@@ -94,18 +80,52 @@ public class ConsoleHandler {
 
     }
 
-    private void printReceipt() {
+    /**
+     * Produkte
+     * _______________________________
+     * 1) Banane
+     * 2) Erdbeere
+     * .
+     * .
+     * .
+     * Warenkorb:   4 Artikel | 12.30€
+     * Seite 1/10     x: nächste Seite
+     */
 
+    private void printReceipt(int page) {
+        // Test
+        String[] sData = { "Banane", "Erdbeere", "Kirsche", "Zitrone", "Melone", "TV" };
+        int iProductCnt = 4;
+        double dValue = 12.3;
+        // Test end
+        
+        System.out.println(wholeLine('-', WIDTH, Alignment.CENTER, NO_BORDER));
+
+        System.out.println(stringToConsole("Produkte", Alignment.CENTER, BORDER));
+        
+        for (int i = 0; i < (HEIGHT - 5) * (page + 1); i++) {
+            System.out.println(stringToConsole("" + i + ") " + sData[i * (page + 1)], Alignment.LEFT, BORDER));
+        }
+        String sLeft = "Warenkorb  " + iProductCnt + " Artikel";
+        String sRight = dValue + "€";
+        System.out.println(stringToConsole(sLeft + addPadding(sLeft.length(), sRight.length(), BORDER) + sRight, Alignment.CENTER, BORDER));
+        
+        sLeft = "Seite " + (page+1) + "/" + ((int)Math.ceil(sData.length/4) + 1);
+        sRight = "n) nächste Seite  x) zurück";
+        System.out.println(stringToConsole( sLeft + addPadding(sLeft.length(), sRight.length(), BORDER) + sRight, Alignment.CENTER, BORDER));
+        System.out.println(wholeLine('-', WIDTH, Alignment.CENTER, NO_BORDER));
     }
 
     /**
-     * Prints a whole line in the console using the char c
-     * @param c - the char to fill the line with
-     * @param length - the length to fill; must be smaller or equal to the max size WIDTH
-     * @param align - Alignment parameter
+     * Returns a whole line in the console using the char c
+     * 
+     * @param c          - the char to fill the line with
+     * @param length     - the length to fill; must be smaller or equal to the max
+     *                   size WIDTH
+     * @param align      - Alignment parameter
      * @param hasBorders - print the '|' char on both sides
      * @return - a String containing the line
-     * @see WIDTH
+     * @see #WIDTH
      * @see Alignment
      */
     private String wholeLine(char c, int length, Alignment align, boolean hasBorders) {
@@ -119,11 +139,35 @@ public class ConsoleHandler {
 
         return retText;
     }
+    
+    /**
+     * Returns multiCnt times a whole line in the console using the char c
+     * 
+     * @param c          - the char to fill the line with
+     * @param length     - the length to fill; must be smaller or equal to the max
+     *                   size WIDTH
+     * @param align      - Alignment parameter
+     * @param hasBorders - print the '|' char on both sides
+     * @param multiCnt   - amount of lines desired
+     * @return - a String containing the lines
+     * @see #wholeLine(char, int, Alignment, boolean)
+     */
+    private String wholeLineMulti(char c, int length, Alignment align, boolean hasBorders, int multiCnt) {
+        String retText = "";
+        for(int i = 0; i < multiCnt; i++) {
+            retText += wholeLine(c, length, align, hasBorders);
+            if(i != multiCnt-1) {
+                retText += "\n";
+            }
+        }
+        return retText;
+    }
 
     /**
      * Convert your desired text to a formatted console line
-     * @param text - your desired text
-     * @param align - Alignment parameter
+     * 
+     * @param text      - your desired text
+     * @param align     - Alignment parameter
      * @param hasBorder - print the '|' char on both sides
      * @return - a String containing the formatted line
      * @see Alignment
@@ -169,6 +213,26 @@ public class ConsoleHandler {
                 retText += "|";
         }
 
+        return retText;
+    }
+    
+    private String addPadding(int amountOfPadding) {
+        String retText = "";
+        for(int i = 0; i < amountOfPadding; i++) {
+            retText += " ";
+        }
+        return retText;
+    }
+    
+    private String addPadding(int leftCharCnt, int rightCharCnt, boolean hasBorder) {
+        String retText = "";
+        int cnt = WIDTH - rightCharCnt - leftCharCnt;
+        if(hasBorder) {
+            cnt = WIDTH - 2 - rightCharCnt - leftCharCnt;
+        }
+        for(int i = 0; i < cnt; i++) {
+            retText += " ";
+        }
         return retText;
     }
 
