@@ -40,6 +40,7 @@ public class ConsoleHandler {
         // Produkte anzeigen
         // Produkt auswählen
         printWelcome();
+        printLogin();
 
     }
 
@@ -57,6 +58,16 @@ public class ConsoleHandler {
     }
 
     private boolean printLogin() {
+        
+        System.out.println(wholeLine('-', WIDTH, Alignment.CENTER, NO_BORDER));
+        System.out.println(wholeLine(' ', WIDTH-2, Alignment.CENTER, BORDER));
+        System.out.println(wholeLine(' ', WIDTH-2, Alignment.CENTER, BORDER));
+        System.out.println(wholeLine(' ', WIDTH-2, Alignment.CENTER, BORDER));
+        System.out.println(stringToConsole("Login", Alignment.CENTER, BORDER));
+        System.out.println(wholeLine(' ', WIDTH-2, Alignment.CENTER, BORDER));
+        System.out.println(wholeLine(' ', WIDTH-2, Alignment.CENTER, BORDER));
+        System.out.println(wholeLine(' ', WIDTH-2, Alignment.CENTER, BORDER));
+        System.out.println(wholeLine('-', WIDTH, Alignment.CENTER, NO_BORDER));
         return false;
     }
 
