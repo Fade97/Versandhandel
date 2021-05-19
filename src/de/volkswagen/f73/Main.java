@@ -8,6 +8,7 @@ public class Main {
         // TODO Auto-generated method stub
         ConsoleHandler cHandler = new ConsoleHandler();
         cHandler.start();
+        // Fabian
     }
 
 }
