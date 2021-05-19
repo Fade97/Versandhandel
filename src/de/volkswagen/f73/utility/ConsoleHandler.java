@@ -2,7 +2,7 @@ package de.volkswagen.f73.utility;
 
 /**
  * 
- * @author Fabian D�rkop
+ * @author Fabian Duerkop
  */
 public class ConsoleHandler {
 
@@ -107,11 +107,11 @@ public class ConsoleHandler {
             System.out.println(stringToConsole("" + i + ") " + sData[i * (page + 1)], Alignment.LEFT, BORDER));
         }
         String sLeft = "Warenkorb  " + iProductCnt + " Artikel";
-        String sRight = dValue + "�";
+        String sRight = dValue + "\u20AC";
         System.out.println(stringToConsole(sLeft + addPadding(sLeft.length(), sRight.length(), BORDER) + sRight, Alignment.CENTER, BORDER));
         
         sLeft = "Seite " + (page+1) + "/" + ((int)Math.ceil(sData.length/4) + 1);
-        sRight = "n) n�chste Seite  x) zur�ck";
+        sRight = "n) n\u00e4chste Seite  x) zur\u00fcck";
         System.out.println(stringToConsole( sLeft + addPadding(sLeft.length(), sRight.length(), BORDER) + sRight, Alignment.CENTER, BORDER));
         System.out.println(wholeLine('-', WIDTH, Alignment.CENTER, NO_BORDER));
     }
