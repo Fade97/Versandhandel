@@ -5,6 +5,6 @@ public class Product {
     private double price;
     private int inventoryNr;
     private int stock;
-    private double tax; 
-    //testErik
+    private double tax;
+    // test Fabian
 }
