@@ -3,6 +3,7 @@ package de.volkswagen.f73;
 public class Receipt {
     private Product[] shoppingCart = new Product[Storage.MAX_PRODUCTS];
     private double totalPrice = 0.0;
+    private boolean isPaid;
     
     //----- Getter -----
     public Product[] getShoppingCart() {
@@ -11,6 +12,10 @@ public class Receipt {
     
     public double getTotalPrice() {
         return this.totalPrice;
+    }
+    
+    public boolean isPaid() {
+        return this.isPaid;
     }
     
     //----- Methoden -----

@@ -9,7 +9,7 @@ public class Storage {
             new Product("Birne", 0.4, 7, Tax.REDUCED_TAX),
             new Product("TV", 249.99, 3, Tax.TAX) };
 
-    public static final int MAX_PRODUCTS = products.length;
+    public static final int MAX_PRODUCTS = 4;
     
     public static Product[] getProducts() {
         return products;
