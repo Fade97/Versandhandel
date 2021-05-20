@@ -97,4 +97,8 @@ public class Product {
         }
         return inventoryNr;
     }
+    
+    public boolean equals(Product product) {
+        return this.getInventoryNr() == product.getInventoryNr();
+    }
 }
