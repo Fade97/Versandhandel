@@ -10,8 +10,8 @@ public class Product {
     private Tax tax;
 
     private static final int INVENTORY_NR_LENGTH = 5;
-    private static final int MAX_PRODUCTS = 4;
-    private static String[] inventoryNumbers = new String[MAX_PRODUCTS];
+    
+    private static String[] inventoryNumbers = new String[Storage.MAX_PRODUCTS];
 
     public enum Tax {
         TAX(19.0), REDUCED_TAX(7.0);
@@ -89,7 +89,7 @@ public class Product {
             }
         } while (!isValidNr);
         //Neue Nummer aufnehmen an nächster Freier Stelle
-        for (int i = 0; i < MAX_PRODUCTS; i++) {
+        for (int i = 0; i < Storage.MAX_PRODUCTS; i++) {
             if (inventoryNumbers[i] == null) {
                 inventoryNumbers[i] = inventoryNr;
                 break;
