@@ -7,7 +7,7 @@ package de.volkswagen.f73.utility;
 public class ConsoleHandler {
 
     private static int WIDTH = 55;
-    private static int HEIGHT = 10;
+    private static int HEIGHT = 9;
 
     private static boolean BORDER = true;
     private static boolean NO_BORDER = false;
@@ -34,13 +34,20 @@ public class ConsoleHandler {
     }
 
     private void printWelcome() {
+        String tempText = wholeLineMulti(' ', WIDTH - 2, Alignment.CENTER, BORDER, (int)(Math.floor((HEIGHT - 4) / 2.0)));
         System.out.println(wholeLine('-', WIDTH, Alignment.CENTER, NO_BORDER));
-        System.out.println(wholeLineMulti(' ', WIDTH - 2, Alignment.CENTER, BORDER, (int)(Math.floor((HEIGHT - 4) / 2.0))));
+        
+        if(!tempText.isEmpty()) {
+            System.out.println(tempText);
+        }
         
         System.out.println(stringToConsole("Welcome", Alignment.CENTER, BORDER));
         System.out.println(wholeLine('-', 7, Alignment.CENTER, BORDER));
         
-        System.out.println(wholeLineMulti(' ', WIDTH - 2, Alignment.CENTER, BORDER, (int)(Math.ceil((HEIGHT - 4) / 2.0))));
+        tempText = wholeLineMulti(' ', WIDTH - 2, Alignment.CENTER, BORDER, (int)(Math.ceil((HEIGHT - 4) / 2.0)));
+        if(!tempText.isEmpty()) {
+            System.out.println(tempText);
+        }
         System.out.println(wholeLine('-', WIDTH, Alignment.CENTER, NO_BORDER));
 
     }
@@ -48,11 +55,18 @@ public class ConsoleHandler {
     private boolean printLogin() {
 
         System.out.println(wholeLine('-', WIDTH, Alignment.CENTER, NO_BORDER));
-        System.out.println(wholeLineMulti(' ', WIDTH - 2, Alignment.CENTER, BORDER, (int)(Math.floor((HEIGHT - 3) / 2.0))));
+        String tempText = wholeLineMulti(' ', WIDTH - 2, Alignment.CENTER, BORDER, (int)(Math.floor((HEIGHT - 3) / 2.0)));
+        if(!tempText.isEmpty()) {
+            System.out.println(tempText);
+        }
         
         System.out.println(stringToConsole("Login", Alignment.CENTER, BORDER));
         
-        System.out.println(wholeLineMulti(' ', WIDTH - 2, Alignment.CENTER, BORDER, (int)(Math.ceil((HEIGHT - 3) / 2.0))));        
+        tempText = wholeLineMulti(' ', WIDTH - 2, Alignment.CENTER, BORDER, (int)(Math.ceil((HEIGHT - 3) / 2.0)));  
+        if(!tempText.isEmpty()) {
+            System.out.println(tempText);
+        }
+        
         System.out.println(wholeLine('-', WIDTH, Alignment.CENTER, NO_BORDER));
         return false;
     }
