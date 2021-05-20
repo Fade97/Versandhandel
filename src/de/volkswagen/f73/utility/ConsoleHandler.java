@@ -11,7 +11,7 @@ import de.volkswagen.f73.*;
 public class ConsoleHandler {
 
     private static final int WIDTH = 55;
-    private static final int HEIGHT = 9;
+    private static final int HEIGHT = 8;
 
     private static final boolean BORDER = true;
     private static final boolean NO_BORDER = false;
@@ -46,8 +46,10 @@ public class ConsoleHandler {
         System.err.println(kundenNr);
         productPage = 0;
         while (!auswahl.equals("x")) {
-            printProducts();
-            auswahl = sc.nextLine();
+            auswahl = printProducts();
+            if(!auswahl.equals("n") && !auswahl.equals("v") && !auswahl.equals("x")) {
+                auswahl = sc.nextLine();
+            }
             if (auswahl.equals("n")) {
                 productPage++;
             } else if (auswahl.equals("v") && productPage > 0) {
@@ -133,14 +135,15 @@ public class ConsoleHandler {
      * Warenkorb: 4 Artikel | 12.30� Seite 1/10 x: n�chste Seite
      */
 
-    private void printProducts() {
+    private String printProducts() {
         // Test
         Product[] products = Storage.getProducts();
         
         int iProductCnt = 4;
         double dValue = 12.30;
         // Test end
-
+        String retCommand = "";
+        
         int staticLines = 5;
         int productsPerPage = (HEIGHT - staticLines);
         
@@ -175,10 +178,25 @@ public class ConsoleHandler {
                 Alignment.CENTER, BORDER));
 
         sLeft = "Seite " + (productPage + 1) + "/" + ((int) Math.ceil(products.length / (HEIGHT - staticLines * 1.0)));
-        sRight = "v) vorherige n) n\u00e4chste Seite  x) zur\u00fcck";
+        sRight = "";
+        if(productPage+1 != 1) {
+            sRight += "v) vorherige";
+        }
+        if(((int) Math.ceil(products.length / (HEIGHT - staticLines * 1.0))) != productPage+1) {
+            sRight += " n) n\u00e4chste Seite";
+        }
+        
+        sRight += "  x) zur\u00fcck";
         System.out.println(stringToConsole(sLeft + addPadding(sLeft.length(), sRight.length(), BORDER) + sRight,
                 Alignment.CENTER, BORDER));
         System.out.println(wholeLine('-', WIDTH, Alignment.CENTER, NO_BORDER));
+        
+        // Product selection
+        Scanner sc = new Scanner(System.in);
+        Receipt r = new Receipt();
+        
+        
+        return retCommand;
     }
 
     private void printReceipt() {
