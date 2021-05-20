@@ -37,6 +37,11 @@ public class Product {
             this.inventoryNr = generateInventoryNr();
         }
     }
+    
+    public Product(Product product) {
+        this(product.getName(), product.getPrice(), product.getQuantity(), product.getTax());
+        this.setInventoryNr(product.getInventoryNr());
+    }
 
     //----- Getter -----
     public String getName() {
@@ -68,6 +73,10 @@ public class Product {
 
     public void setPrice(double newPrice) {
         this.price = newPrice;
+    }
+    
+    private void setInventoryNr(String invNr) {
+        this.inventoryNr = invNr;
     }
 
     //----- Methoden -----

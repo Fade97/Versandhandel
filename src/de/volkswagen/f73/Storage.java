@@ -15,13 +15,18 @@ public class Storage {
         return products;
     }
     
-    public static int getStock() {
+    public static int getStock(Product product) {
+        for (int i = 0; i < MAX_PRODUCTS; i++) {
+            if (products[i].equals(product)) {
+                return products[i].getQuantity();
+            }
+        }
         return 0;
     }
     
     public static void setStock(Product product, int quantity) {
         for (int i = 0; i < MAX_PRODUCTS; i++) {
-            if (products[i].getInventoryNr() == product.getInventoryNr()) {
+            if (products[i].equals(product)) {
                 products[i].setQuantity(quantity);
             }
         }
