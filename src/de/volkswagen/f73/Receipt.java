@@ -14,10 +14,16 @@ public class Receipt {
         for (int i = 0; i < shoppingCart.length; i++) {
             
             if (shoppingCart[i] == null) {
-                shoppingCart[i] = productToAdd;
-                shoppingCart[i].setStock(quantity); //Auf menge überprüfen ob genug vorhanden
+                
+                //Auf menge überprüfen ob genug vorhanden
+                if (Storage.getStock() - quantity >= 0) {
+                    shoppingCart[i] = productToAdd;
+                    shoppingCart[i].setQuantity(quantity); 
+                    Storage.setStock(productToAdd, quantity);
+                }
+                
             } else if (shoppingCart[i].getInventoryNr() == productToAdd.getInventoryNr()) {
-                shoppingCart[i].setStock(shoppingCart[i].getStock() + quantity);
+                shoppingCart[i].setQuantity(shoppingCart[i].getQuantity() + quantity);
             }
             
         }

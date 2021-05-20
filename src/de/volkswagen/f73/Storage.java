@@ -14,4 +14,16 @@ public class Storage {
     public static Product[] getProducts() {
         return products;
     }
+    
+    public static int getStock() {
+        return 0;
+    }
+    
+    public static void setStock(Product product, int quantity) {
+        for (int i = 0; i < MAX_PRODUCTS; i++) {
+            if (products[i].getInventoryNr() == product.getInventoryNr()) {
+                products[i].setQuantity(quantity);
+            }
+        }
+    }
 }
