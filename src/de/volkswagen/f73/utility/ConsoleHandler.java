@@ -1,5 +1,8 @@
 package de.volkswagen.f73.utility;
 
+import java.io.IOException;
+import java.util.Scanner;
+
 /**
  * 
  * @author Fabian Duerkop
@@ -13,7 +16,7 @@ public class ConsoleHandler {
     private static boolean NO_BORDER = false;
 
     /**
-     * Possible alignment options 
+     * Possible alignment options
      * <p>
      * LEFT, CENTER, RIGHT
      * 
@@ -28,24 +31,41 @@ public class ConsoleHandler {
         // while
         // Produkte anzeigen
         // Produkt ausw�hlen
+        Scanner sc = new Scanner(System.in);
+        String auswahl = "";
+
         printWelcome();
+        sc.nextLine();
+
         printLogin();
-        printReceipt(0);
+        String kundenNr = sc.nextLine();
+        System.err.println(kundenNr);
+        int page = 0;
+        while (!auswahl.equals("x")) {
+            printProducts(page);
+            auswahl = sc.nextLine();
+            if (auswahl.equals("n")) {
+                page++;
+            } else if (auswahl.equals("v") && page > 1) {
+                page--;
+            }
+        }
     }
 
     private void printWelcome() {
-        String tempText = wholeLineMulti(' ', WIDTH - 2, Alignment.CENTER, BORDER, (int)(Math.floor((HEIGHT - 4) / 2.0)));
+        String tempText = wholeLineMulti(' ', WIDTH - 2, Alignment.CENTER, BORDER,
+                (int) (Math.floor((HEIGHT - 4) / 2.0)));
         System.out.println(wholeLine('-', WIDTH, Alignment.CENTER, NO_BORDER));
-        
-        if(!tempText.isEmpty()) {
+
+        if (!tempText.isEmpty()) {
             System.out.println(tempText);
         }
-        
+
         System.out.println(stringToConsole("Welcome", Alignment.CENTER, BORDER));
         System.out.println(wholeLine('-', 7, Alignment.CENTER, BORDER));
-        
-        tempText = wholeLineMulti(' ', WIDTH - 2, Alignment.CENTER, BORDER, (int)(Math.ceil((HEIGHT - 4) / 2.0)));
-        if(!tempText.isEmpty()) {
+
+        tempText = wholeLineMulti(' ', WIDTH - 2, Alignment.CENTER, BORDER, (int) (Math.ceil((HEIGHT - 4) / 2.0)));
+        if (!tempText.isEmpty()) {
             System.out.println(tempText);
         }
         System.out.println(wholeLine('-', WIDTH, Alignment.CENTER, NO_BORDER));
@@ -53,21 +73,25 @@ public class ConsoleHandler {
     }
 
     private boolean printLogin() {
+        System.out.println(wholeLine('-', WIDTH, Alignment.CENTER, NO_BORDER));
+
+        String tempText = wholeLineMulti(' ', WIDTH - 2, Alignment.CENTER, BORDER,
+                (int) (Math.floor((HEIGHT - 3) / 2.0)));
+        if (!tempText.isEmpty()) {
+            System.out.println(tempText);
+        }
+
+        System.out.println(stringToConsole("Login", Alignment.CENTER, BORDER));
+
+        tempText = wholeLineMulti(' ', WIDTH - 2, Alignment.CENTER, BORDER, (int) (Math.ceil((HEIGHT - 3) / 2.0)));
+        if (!tempText.isEmpty()) {
+            System.out.println(tempText);
+        }
 
         System.out.println(wholeLine('-', WIDTH, Alignment.CENTER, NO_BORDER));
-        String tempText = wholeLineMulti(' ', WIDTH - 2, Alignment.CENTER, BORDER, (int)(Math.floor((HEIGHT - 3) / 2.0)));
-        if(!tempText.isEmpty()) {
-            System.out.println(tempText);
-        }
-        
-        System.out.println(stringToConsole("Login", Alignment.CENTER, BORDER));
-        
-        tempText = wholeLineMulti(' ', WIDTH - 2, Alignment.CENTER, BORDER, (int)(Math.ceil((HEIGHT - 3) / 2.0)));  
-        if(!tempText.isEmpty()) {
-            System.out.println(tempText);
-        }
-        
-        System.out.println(wholeLine('-', WIDTH, Alignment.CENTER, NO_BORDER));
+
+        System.out.print("Bitte KundenNr eingeben: ");
+
         return false;
     }
 
@@ -84,51 +108,54 @@ public class ConsoleHandler {
 
     private void printAccount() {
         // printEditAccount
-        
+
     }
 
     private void printEditAccount() {
 
     }
-    
+
     /**
-     * Produkte
-     * _______________________________
-     * 1) Banane
-     * 2) Erdbeere
-     * .
-     * .
-     * .
-     * Warenkorb:   4 Artikel | 12.30�
-     * Seite 1/10     x: n�chste Seite
+     * Produkte _______________________________ 1) Banane 2) Erdbeere . . .
+     * Warenkorb: 4 Artikel | 12.30� Seite 1/10 x: n�chste Seite
      */
 
     private void printProducts(int page) {
         // Test
         String[] sData = { "Banane", "Erdbeere", "Kirsche", "Zitrone", "Melone", "TV" };
         int iProductCnt = 4;
-        double dValue = 12.3;
+        double dValue = 12.30;
         // Test end
-        
+
+        int staticLines = 5;
+
         System.out.println(wholeLine('-', WIDTH, Alignment.CENTER, NO_BORDER));
 
         System.out.println(stringToConsole("Produkte", Alignment.CENTER, BORDER));
-        
-        for (int i = 0; i < (HEIGHT - 5) * (page + 1); i++) {
+
+        for (int i = 0; i < (HEIGHT - staticLines) * (page + 1) && i < sData.length; i++) {
             System.out.println(stringToConsole("" + i + ") " + sData[i * (page + 1)], Alignment.LEFT, BORDER));
         }
+
+        if (HEIGHT - staticLines - sData.length > 0) {
+            System.out.println(
+                    wholeLineMulti(' ', WIDTH - 2, Alignment.CENTER, BORDER, HEIGHT - staticLines - sData.length));
+        }
+
         String sLeft = "Warenkorb  " + iProductCnt + " Artikel";
         String sRight = dValue + "\u20AC";
-        System.out.println(stringToConsole(sLeft + addPadding(sLeft.length(), sRight.length(), BORDER) + sRight, Alignment.CENTER, BORDER));
-        
-        sLeft = "Seite " + (page+1) + "/" + ((int)Math.ceil(sData.length/4) + 1);
-        sRight = "n) n\u00e4chste Seite  x) zur\u00fcck";
-        System.out.println(stringToConsole( sLeft + addPadding(sLeft.length(), sRight.length(), BORDER) + sRight, Alignment.CENTER, BORDER));
+        System.out.println(stringToConsole(sLeft + addPadding(sLeft.length(), sRight.length(), BORDER) + sRight,
+                Alignment.CENTER, BORDER));
+
+        sLeft = "Seite " + (page + 1) + "/" + ((int) Math.ceil(sData.length / (HEIGHT - staticLines * 1.0)));
+        sRight = "v) vorherige n) n\u00e4chste Seite  x) zur\u00fcck";
+        System.out.println(stringToConsole(sLeft + addPadding(sLeft.length(), sRight.length(), BORDER) + sRight,
+                Alignment.CENTER, BORDER));
         System.out.println(wholeLine('-', WIDTH, Alignment.CENTER, NO_BORDER));
     }
 
     private void printReceipt() {
-        
+
     }
 
     /**
@@ -154,7 +181,7 @@ public class ConsoleHandler {
 
         return retText;
     }
-    
+
     /**
      * Returns multiCnt times a whole line in the console using the char c
      * 
@@ -169,9 +196,9 @@ public class ConsoleHandler {
      */
     private String wholeLineMulti(char c, int length, Alignment align, boolean hasBorders, int multiCnt) {
         String retText = "";
-        for(int i = 0; i < multiCnt; i++) {
+        for (int i = 0; i < multiCnt; i++) {
             retText += wholeLine(c, length, align, hasBorders);
-            if(i != multiCnt-1) {
+            if (i != multiCnt - 1) {
                 retText += "\n";
             }
         }
@@ -230,22 +257,22 @@ public class ConsoleHandler {
 
         return retText;
     }
-    
+
     private String addPadding(int amountOfPadding) {
         String retText = "";
-        for(int i = 0; i < amountOfPadding; i++) {
+        for (int i = 0; i < amountOfPadding; i++) {
             retText += " ";
         }
         return retText;
     }
-    
+
     private String addPadding(int leftCharCnt, int rightCharCnt, boolean hasBorder) {
         String retText = "";
         int cnt = WIDTH - rightCharCnt - leftCharCnt;
-        if(hasBorder) {
+        if (hasBorder) {
             cnt = WIDTH - 2 - rightCharCnt - leftCharCnt;
         }
-        for(int i = 0; i < cnt; i++) {
+        for (int i = 0; i < cnt; i++) {
             retText += " ";
         }
         return retText;
