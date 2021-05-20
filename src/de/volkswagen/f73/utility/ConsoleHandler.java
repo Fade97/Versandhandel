@@ -1,6 +1,5 @@
 package de.volkswagen.f73.utility;
 
-import java.io.IOException;
 import java.util.Scanner;
 
 import de.volkswagen.f73.*;
@@ -38,7 +37,6 @@ public class ConsoleHandler {
         Scanner sc = new Scanner(System.in);
         String auswahl = "";
 
-        printError("Test");
         printWelcome();
         printAccount();
         sc.nextLine();
