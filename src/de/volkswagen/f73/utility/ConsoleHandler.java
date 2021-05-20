@@ -3,7 +3,7 @@ package de.volkswagen.f73.utility;
 import java.io.IOException;
 import java.util.Scanner;
 
-import de.volkswagen.f73.Customer;
+import de.volkswagen.f73.*;
 
 /**
  * 
@@ -12,7 +12,7 @@ import de.volkswagen.f73.Customer;
 public class ConsoleHandler {
 
     private static int WIDTH = 55;
-    private static int HEIGHT = 9;
+    private static int HEIGHT = 10;
 
     private static boolean BORDER = true;
     private static boolean NO_BORDER = false;
@@ -50,7 +50,7 @@ public class ConsoleHandler {
             auswahl = sc.nextLine();
             if (auswahl.equals("n")) {
                 page++;
-            } else if (auswahl.equals("v") && page > 1) {
+            } else if (auswahl.equals("v") && page > 0) {
                 page--;
             }
         }
@@ -135,24 +135,29 @@ public class ConsoleHandler {
 
     private void printProducts(int page) {
         // Test
-        String[] sData = { "Banane", "Erdbeere", "Kirsche", "Zitrone", "Melone", "TV" };
+        Product[] products = Storage.getProducts();
+        
         int iProductCnt = 4;
         double dValue = 12.30;
         // Test end
 
         int staticLines = 5;
-
+        int productsPerPage = (HEIGHT - staticLines);
+        
         System.out.println(wholeLine('-', WIDTH, Alignment.CENTER, NO_BORDER));
 
         System.out.println(stringToConsole("Produkte", Alignment.CENTER, BORDER));
 
-        for (int i = 0; i < (HEIGHT - staticLines) * (page + 1) && i < sData.length; i++) {
-            System.out.println(stringToConsole("" + i + ") " + sData[i * (page + 1)], Alignment.LEFT, BORDER));
+        
+        for (int i = 0; i < (HEIGHT - staticLines) && i + page * productsPerPage < products.length; i++) {
+            String left = "" + i + ") " + products[i + page * (HEIGHT - staticLines)].getName();
+            String right = products[i + page * (HEIGHT - staticLines)].getPrice() + "\u20AC";
+            System.out.println(stringToConsole(left + addPadding(left.length(), right.length(), BORDER) + right, Alignment.LEFT, BORDER));
         }
 
-        if (HEIGHT - staticLines - sData.length > 0) {
+        if (HEIGHT - staticLines - products.length > 0) {
             System.out.println(
-                    wholeLineMulti(' ', WIDTH - 2, Alignment.CENTER, BORDER, HEIGHT - staticLines - sData.length));
+                    wholeLineMulti(' ', WIDTH - 2, Alignment.CENTER, BORDER, HEIGHT - staticLines - products.length));
         }
 
         String sLeft = "Warenkorb  " + iProductCnt + " Artikel";
@@ -160,7 +165,7 @@ public class ConsoleHandler {
         System.out.println(stringToConsole(sLeft + addPadding(sLeft.length(), sRight.length(), BORDER) + sRight,
                 Alignment.CENTER, BORDER));
 
-        sLeft = "Seite " + (page + 1) + "/" + ((int) Math.ceil(sData.length / (HEIGHT - staticLines * 1.0)));
+        sLeft = "Seite " + (page + 1) + "/" + ((int) Math.ceil(products.length / (HEIGHT - staticLines * 1.0)));
         sRight = "v) vorherige n) n\u00e4chste Seite  x) zur\u00fcck";
         System.out.println(stringToConsole(sLeft + addPadding(sLeft.length(), sRight.length(), BORDER) + sRight,
                 Alignment.CENTER, BORDER));
