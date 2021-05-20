@@ -9,20 +9,24 @@ public class Receipt {
         return this.shoppingCart;
     }
     
+    public double getTotalPrice() {
+        return this.totalPrice;
+    }
+    
     //----- Methoden -----
     public void addProductToCart(Product productToAdd, int quantity) {
         for (int i = 0; i < shoppingCart.length; i++) {
             
-            if (shoppingCart[i] == null) {
-                shoppingCart[i] = productToAdd;
-                shoppingCart[i].setStock(quantity); //Auf menge überprüfen ob genug vorhanden
-            } else if (shoppingCart[i].getInventoryNr() == productToAdd.getInventoryNr()) {
-                shoppingCart[i].setStock(shoppingCart[i].getStock() + quantity);
+            if (shoppingCart[i] == null && Storage.getStock(productToAdd) - quantity >= 0) {
+                shoppingCart[i] = new Product(productToAdd);
+                shoppingCart[i].setQuantity(quantity);
+                break;
+            } else if (shoppingCart[i].equals(productToAdd)) {
+                shoppingCart[i].setQuantity(shoppingCart[i].getQuantity() + quantity);
+                break;
             }
-            
         }
     }
     
     //RemoveFromCart Methode
-    //Bei menge = 0 stock = null
 }

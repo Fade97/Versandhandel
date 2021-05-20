@@ -6,7 +6,7 @@ public class Product {
     private String name;
     private double price;
     private String inventoryNr = null;
-    private int stock;
+    private int quantity;
     private Tax tax;
 
     private static final int INVENTORY_NR_LENGTH = 5;
@@ -28,14 +28,19 @@ public class Product {
     }
 
     //----- Konstruktoren -----
-    public Product(String name, double price, int stock, Tax tax) {
+    public Product(String name, double price, int quantity, Tax tax) {
         this.name = name;
         this.price = price;
-        this.stock = stock;
+        this.quantity = quantity;
         this.tax = tax;
         if (this.inventoryNr == null) {
             this.inventoryNr = generateInventoryNr();
         }
+    }
+    
+    public Product(Product product) {
+        this(product.getName(), product.getPrice(), product.getQuantity(), product.getTax());
+        this.setInventoryNr(product.getInventoryNr());
     }
 
     //----- Getter -----
@@ -51,8 +56,8 @@ public class Product {
         return this.inventoryNr;
     }
 
-    public int getStock() {
-        return this.stock;
+    public int getQuantity() {
+        return this.quantity;
     }
 
     public Tax getTax() {
@@ -60,14 +65,18 @@ public class Product {
     }
 
     //----- Setter -----
-    public void setStock(int newStock) {
-        if (newStock >= 0) {
-            this.stock = newStock;
+    public void setQuantity(int newQuantity) {
+        if (newQuantity >= 0) {
+            this.quantity = newQuantity;
         }
     }
 
     public void setPrice(double newPrice) {
         this.price = newPrice;
+    }
+    
+    private void setInventoryNr(String invNr) {
+        this.inventoryNr = invNr;
     }
 
     //----- Methoden -----
@@ -96,5 +105,9 @@ public class Product {
             }
         }
         return inventoryNr;
+    }
+    
+    public boolean equals(Product product) {
+        return this.getInventoryNr() == product.getInventoryNr();
     }
 }
