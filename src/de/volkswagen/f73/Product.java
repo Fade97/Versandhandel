@@ -13,7 +13,6 @@ public class Product {
     public enum Category{FRUITS, VEGETABLES, MEAT, MILK_PRODUCTS, BREAD, NON_FOOD;}
 
     private static final int INVENTORY_NR_LENGTH = 5;
-    
     private static String[] inventoryNumbers = new String[Storage.MAX_PRODUCTS];
 
     //----- Konstruktoren -----
