@@ -7,39 +7,29 @@ public class Product {
     private double price;
     private String inventoryNr = null;
     private int quantity;
-    private Tax tax;
+    private TaxRates tax;
+    private Category category;
+    
+    public enum Category{FRUITS, VEGETABLES, MEAT, MILK_PRODUCTS, BREAD, NON_FOOD;}
 
     private static final int INVENTORY_NR_LENGTH = 5;
     
     private static String[] inventoryNumbers = new String[Storage.MAX_PRODUCTS];
 
-    public enum Tax {
-        TAX(19.0), REDUCED_TAX(7.0);
-
-        double percentage;
-
-        Tax(double percentage) {
-            this.percentage = percentage;
-        }
-
-        public double getPercentage() {
-            return this.percentage;
-        }
-    }
-
     //----- Konstruktoren -----
-    public Product(String name, double price, int quantity, Tax tax) {
+    public Product(String name, double price, int quantity, Category category, TaxRates tax) {
         this.name = name;
         this.price = price;
         this.quantity = quantity;
         this.tax = tax;
+        this.category = category;
         if (this.inventoryNr == null) {
             this.inventoryNr = generateInventoryNr();
         }
     }
     
     public Product(Product product) {
-        this(product.getName(), product.getPrice(), product.getQuantity(), product.getTax());
+        this(product.getName(), product.getPrice(), product.getQuantity(), product.getCategory(), product.getTax());
         this.setInventoryNr(product.getInventoryNr());
     }
 
@@ -60,8 +50,12 @@ public class Product {
         return this.quantity;
     }
 
-    public Tax getTax() {
+    public TaxRates getTax() {
         return this.tax;
+    }
+    
+    public Category getCategory() {
+        return this.category;
     }
 
     //----- Setter -----
