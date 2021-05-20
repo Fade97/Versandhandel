@@ -1,8 +1,6 @@
 package de.volkswagen.f73;
 
-import de.volkswagen.f73.utility.ConsoleHandler;
-import de.volkswagen.f73.utility.CsvHandler;
-import de.volkswagen.f73.utility.UserManagement;
+import de.volkswagen.f73.utility.*;
 
 public class Main {
 
