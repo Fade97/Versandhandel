@@ -1,5 +1,9 @@
 package de.volkswagen.f73.utility;
 
+import java.nio.channels.SelectableChannel;
+import java.text.DecimalFormat;
+import java.util.IllegalFormatException;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 import de.volkswagen.f73.*;
@@ -11,13 +15,14 @@ import de.volkswagen.f73.*;
 public class ConsoleHandler {
 
     private static final int WIDTH = 55;
-    private static final int HEIGHT = 9;
+    private static final int HEIGHT = 11;
 
     private static final boolean BORDER = true;
     private static final boolean NO_BORDER = false;
 
     private int productPage;
-    
+    private Customer customer;
+
     /**
      * Possible alignment options
      * <p>
@@ -38,16 +43,17 @@ public class ConsoleHandler {
         String auswahl = "";
 
         printWelcome();
+        printLogin();
         printAccount();
         sc.nextLine();
 
-        printLogin();
-        String kundenNr = sc.nextLine();
-        System.err.println(kundenNr);
+
         productPage = 0;
         while (!auswahl.equals("x")) {
-            printProducts();
-            auswahl = sc.nextLine();
+            auswahl = printProducts();
+//            if (!auswahl.equals("n") && !auswahl.equals("v") && !auswahl.equals("x")) {
+//                auswahl = sc.nextLine();
+//            }
             if (auswahl.equals("n")) {
                 productPage++;
             } else if (auswahl.equals("v") && productPage > 0) {
@@ -95,6 +101,17 @@ public class ConsoleHandler {
         System.out.println(wholeLine('-', WIDTH, Alignment.CENTER, NO_BORDER));
 
         System.out.print("Bitte KundenNr eingeben: ");
+        Scanner sc = new Scanner(System.in);
+        String kundenNr = sc.nextLine();
+        UserManagement manager = UserManagement.instance();
+        Customer c = manager.getUser(kundenNr);
+        while (c == null) {
+            System.out.print("KundenNr nicht vorhanden! Bitte erneut versuchen: ");
+            kundenNr = sc.nextLine();
+            manager = UserManagement.instance();
+            c = manager.getUser(kundenNr);
+        }
+        this.customer = c;
 
         return false;
     }
@@ -113,14 +130,13 @@ public class ConsoleHandler {
     private void printAccount() {
         // printEditAccount
         System.out.println(wholeLine('-', WIDTH, Alignment.CENTER, NO_BORDER));
-        
-        Customer c = new Customer("Fabian", "Duerkop", "abcstrasse", "14", "38554", "Weyhausen");
-        String[] customerInfo = c.print();
-        for(String s : customerInfo) {
+
+        String[] customerInfo = customer.print();
+        for (String s : customerInfo) {
             System.out.println(stringToConsole(s, Alignment.LEFT, BORDER));
-            
+
         }
-        
+
         System.out.println(wholeLine('-', WIDTH, Alignment.CENTER, NO_BORDER));
     }
 
@@ -133,52 +149,92 @@ public class ConsoleHandler {
      * Warenkorb: 4 Artikel | 12.30� Seite 1/10 x: n�chste Seite
      */
 
-    private void printProducts() {
+    private String printProducts() {
         // Test
         Product[] products = Storage.getProducts();
-        
-        int iProductCnt = 4;
-        double dValue = 12.30;
-        // Test end
 
-        int staticLines = 5;
-        int productsPerPage = (HEIGHT - staticLines);
+        Receipt[] receipts = customer.getReceipts();
+        Receipt receipt = null;
+        if(receipts != null) {
+            for(Receipt r : receipts) {
+                if(!r.isPaid()) {
+                    receipt = r;
+                    break;
+                }
+            }
+        }
+        if(receipt == null) {
+            receipt = new Receipt();
+            customer.addReceipt(receipt);
+        }
         
-        while(products.length - ((productPage) * productsPerPage) <= 0)
-        {
-            if(productPage <= 0)
-            {
+        int iProductCnt = receipt.getNumberOfItems();
+        double dValue = receipt.getTotalPrice();
+        // Test end
+        String retCommand = "";
+        DecimalFormat df = new DecimalFormat("#.##");
+        int staticLines = 6;
+        int productsPerPage = (HEIGHT - staticLines);
+
+        while (products.length - ((productPage) * productsPerPage) <= 0) {
+            if (productPage <= 0) {
                 break;
             }
             productPage--;
         }
-        
+
         System.out.println(wholeLine('-', WIDTH, Alignment.CENTER, NO_BORDER));
 
         System.out.println(stringToConsole("Produkte", Alignment.CENTER, BORDER));
 
-        
+        // Products
         for (int i = 0; i < (HEIGHT - staticLines) && i + productPage * productsPerPage < products.length; i++) {
             String left = "" + i + ") " + products[i + productPage * (HEIGHT - staticLines)].getName();
-            String right = products[i + productPage * (HEIGHT - staticLines)].getPrice() + "\u20AC";
-            System.out.println(stringToConsole(left + addPadding(left.length(), right.length(), BORDER) + right, Alignment.LEFT, BORDER));
+            String right = df.format(products[i + productPage * (HEIGHT - staticLines)].getPrice()) + "\u20AC";
+            System.out.println(stringToConsole(left + addPadding(left.length(), right.length(), BORDER) + right,
+                    Alignment.LEFT, BORDER));
         }
 
-        if (HEIGHT - staticLines - products.length > 0) {
+        if (HEIGHT - staticLines - (products.length - productsPerPage * productPage) > 0) {
             System.out.println(
-                    wholeLineMulti(' ', WIDTH - 2, Alignment.CENTER, BORDER, HEIGHT - staticLines - products.length));
+                    wholeLineMulti(' ', WIDTH - 2, Alignment.CENTER, BORDER, HEIGHT - staticLines - (products.length - productsPerPage * productPage)));
         }
-
+        
+        // Footer
+        System.out.println(wholeLine('-', 7, Alignment.RIGHT, BORDER));
         String sLeft = "Warenkorb  " + iProductCnt + " Artikel";
-        String sRight = dValue + "\u20AC";
+        String sRight = df.format(dValue) + "\u20AC";
         System.out.println(stringToConsole(sLeft + addPadding(sLeft.length(), sRight.length(), BORDER) + sRight,
                 Alignment.CENTER, BORDER));
 
         sLeft = "Seite " + (productPage + 1) + "/" + ((int) Math.ceil(products.length / (HEIGHT - staticLines * 1.0)));
-        sRight = "v) vorherige n) n\u00e4chste Seite  x) zur\u00fcck";
+        sRight = "";
+        if (productPage + 1 != 1) {
+            sRight += "v) vorherige";
+        }
+        if (((int) Math.ceil(products.length / (HEIGHT - staticLines * 1.0))) != productPage + 1) {
+            sRight += " n) n\u00e4chste Seite";
+        }
+
+        sRight += "  x) zur\u00fcck";
         System.out.println(stringToConsole(sLeft + addPadding(sLeft.length(), sRight.length(), BORDER) + sRight,
                 Alignment.CENTER, BORDER));
         System.out.println(wholeLine('-', WIDTH, Alignment.CENTER, NO_BORDER));
+
+        // Product selection
+        Scanner sc = new Scanner(System.in);
+        retCommand = sc.nextLine();
+        try {
+            int selectedIndex = Integer.parseInt(retCommand);
+            if(selectedIndex + productPage * productsPerPage < products.length && selectedIndex < productsPerPage) {
+                Product p = products[selectedIndex + productPage * productsPerPage];
+                receipt.addProductToCart(p, 1);
+            }
+        } catch(Exception e) {
+            
+        } 
+
+        return retCommand;
     }
 
     private void printReceipt() {
@@ -310,20 +366,20 @@ public class ConsoleHandler {
          * |--------------------------| | Error | |--------------------------|
          */
         System.err.println(wholeLine('-', WIDTH, Alignment.CENTER, NO_BORDER));
-        
+
         String tempText = wholeLineMulti(' ', WIDTH - 2, Alignment.CENTER, BORDER,
                 (int) (Math.floor((HEIGHT - 3) / 2.0)));
         if (!tempText.isEmpty()) {
             System.err.println(tempText);
         }
-        
+
         System.err.println(stringToConsole(errorMessage, Alignment.CENTER, BORDER));
-        
+
         tempText = wholeLineMulti(' ', WIDTH - 2, Alignment.CENTER, BORDER, (int) (Math.ceil((HEIGHT - 3) / 2.0)));
         if (!tempText.isEmpty()) {
             System.err.println(tempText);
         }
-        
+
         System.err.println(wholeLine('-', WIDTH, Alignment.CENTER, NO_BORDER));
     }
 }
