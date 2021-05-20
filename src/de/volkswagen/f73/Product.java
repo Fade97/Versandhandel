@@ -10,7 +10,7 @@ public class Product {
     private TaxRates tax;
     private Category category;
     
-    public enum Category{FRUITS, VEGETABLES, MEAT, MILK_PRODUCTS, BREAD, NON_FOOD;}
+    public enum Category{FRUITS, VEGETABLES, MEAT, FISH, MILK_PRODUCTS, BREAD, DRINKS, NON_FOOD;}
 
     private static final int INVENTORY_NR_LENGTH = 5;
     private static String[] inventoryNumbers = new String[Storage.MAX_PRODUCTS];
