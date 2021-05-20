@@ -20,9 +20,7 @@ public class UserManagement {
     }
 
     public boolean save() {
-        // TODO implement save method using CsvHandler
-        // return CsvHandler.saveCustomers(customers);
-        return false;
+        return CsvHandler.saveCustomers(customers);
     }
 
     public boolean addUser(Customer c) {

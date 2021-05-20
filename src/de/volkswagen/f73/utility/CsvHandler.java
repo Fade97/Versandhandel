@@ -12,7 +12,6 @@ import de.volkswagen.f73.Customer;
 
 public class CsvHandler {
 	static String fileName = "Export.csv";
-	static String fileName2 = "SaveFromApp.csv";
 
 	public static Customer[] loadCustomers() {
 		BufferedReader reader;
@@ -29,7 +28,9 @@ public class CsvHandler {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
+		if( customerCount <= 0) {
+		    return null;
+		}
 		Customer[] customers = new Customer[customerCount];
 		try {
 			reader = new BufferedReader(new FileReader(Paths.get(fileName).toString()));
@@ -40,7 +41,8 @@ public class CsvHandler {
 						textRead.append(System.lineSeparator());
 						textLine = reader.readLine();
 						String[] tmp = textLine.split(",");
-						customers[i] = new Customer(tmp[0], tmp[1], tmp[2], tmp[3], tmp[4], tmp[5]);
+						//"CustomerNr,Firstname,Lastname,Street,Housenr,ZipCode,City"
+						customers[i] = new Customer(tmp[1], tmp[2], tmp[3], tmp[4], tmp[5], tmp[6], tmp[0]);
 				}
 			reader.close();
 		} catch (FileNotFoundException e) {
@@ -54,17 +56,17 @@ public class CsvHandler {
 
 	public static boolean saveCustomers(Customer[] customers) {
 		boolean fileIsSaved = true;
-		try (BufferedWriter writer = Files.newBufferedWriter(Paths.get(fileName2));) {
+		try (BufferedWriter writer = Files.newBufferedWriter(Paths.get(fileName));) {
 				String tableHead = "CustomerNr,Firstname,Lastname,Street,Housenr,ZipCode,City";
 				writer.write(tableHead);
 				writer.newLine();
 			for (int i = 0 ; i < customers.length ; i++) {
-				String oneCustomer = (String.valueOf(customers[i].getCustomerNr()) + "," + customers[i].getFirstName() + "," + customers[i].getLastName() + "," + customers[i].getAddress().getStreet() + "," + customers[i].getAddress().getHouseNr() + "," + customers[i].getAddress().getCity() + "," + customers[i].getAddress().getZipCode());
+				String oneCustomer = (String.valueOf(customers[i].getCustomerNr()) + "," + customers[i].getFirstName() + "," + customers[i].getLastName() + "," + customers[i].getAddress().getStreet() + "," + customers[i].getAddress().getHouseNr() + "," + customers[i].getAddress().getZipCode() + "," + customers[i].getAddress().getCity());
 				writer.write(oneCustomer);
 				writer.newLine();
 			}
 			
-			System.out.println("Export: " + fileName2 + " wurde erstellt");
+			System.out.println("Export: " + fileName + " wurde erstellt");
 			writer.close();
 
 		} catch (Exception e) {

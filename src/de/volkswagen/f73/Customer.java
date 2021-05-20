@@ -20,6 +20,28 @@ public class Customer {
         this.address.setCity(City);
         this.customerNr = 1000 + CUSTOMER_CNT++;
     }
+    
+    /**
+     * Only use on loading of the customer file!
+     * @deprecated
+     * @param firstName
+     * @param lastName
+     * @param street
+     * @param houseNr
+     * @param zipCode
+     * @param City
+     * @param customerNr
+     */
+    public Customer(String firstName, String lastName, String street, String houseNr, String zipCode, String City, String customerNr) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.address.setStreet(street);
+        this.address.setHouseNr(houseNr);
+        this.address.setZipCode(Integer.parseInt(zipCode));
+        this.address.setCity(City);
+        this.customerNr = Integer.parseInt(customerNr);
+        CUSTOMER_CNT = this.customerNr - 1000 + 1;
+    }
 
     public String[] print() {
 
