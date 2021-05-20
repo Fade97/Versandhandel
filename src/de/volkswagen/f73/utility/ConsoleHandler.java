@@ -84,16 +84,13 @@ public class ConsoleHandler {
 
     private void printAccount() {
         // printEditAccount
+        
     }
 
     private void printEditAccount() {
 
     }
-
-    private void printProducts() {
-
-    }
-
+    
     /**
      * Produkte
      * _______________________________
@@ -106,7 +103,7 @@ public class ConsoleHandler {
      * Seite 1/10     x: n�chste Seite
      */
 
-    private void printReceipt(int page) {
+    private void printProducts(int page) {
         // Test
         String[] sData = { "Banane", "Erdbeere", "Kirsche", "Zitrone", "Melone", "TV" };
         int iProductCnt = 4;
@@ -128,6 +125,10 @@ public class ConsoleHandler {
         sRight = "n) n\u00e4chste Seite  x) zur\u00fcck";
         System.out.println(stringToConsole( sLeft + addPadding(sLeft.length(), sRight.length(), BORDER) + sRight, Alignment.CENTER, BORDER));
         System.out.println(wholeLine('-', WIDTH, Alignment.CENTER, NO_BORDER));
+    }
+
+    private void printReceipt() {
+        
     }
 
     /**
