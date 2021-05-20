@@ -13,6 +13,16 @@ public class Receipt {
         return this.totalPrice;
     }
     
+    public int getNumberOfItems() {
+        int numberOfItems = 0;
+        for (Product product : shoppingCart) {
+            if (product != null) {
+                numberOfItems++;
+            }
+        }
+        return numberOfItems;
+    }
+    
     //----- Methoden -----
     public void addProductToCart(Product productToAdd, int quantity) {
         for (int i = 0; i < shoppingCart.length; i++) {
@@ -26,6 +36,17 @@ public class Receipt {
                 break;
             }
         }
+        calculateTotalPrice();
+    }
+    
+    private void calculateTotalPrice() {
+        double sum = 0.0;
+        for (Product product : shoppingCart) {
+            if (product != null) {
+                sum += ((double)product.getQuantity()) * ((double)product.getPrice());
+            }
+        }
+        this.totalPrice = sum;
     }
     
     //RemoveFromCart Methode
