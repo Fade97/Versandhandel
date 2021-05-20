@@ -3,6 +3,8 @@ package de.volkswagen.f73.utility;
 import java.io.IOException;
 import java.util.Scanner;
 
+import de.volkswagen.f73.Customer;
+
 /**
  * 
  * @author Fabian Duerkop
@@ -34,7 +36,9 @@ public class ConsoleHandler {
         Scanner sc = new Scanner(System.in);
         String auswahl = "";
 
+        
         printWelcome();
+        printAccount();
         sc.nextLine();
 
         printLogin();
@@ -108,7 +112,16 @@ public class ConsoleHandler {
 
     private void printAccount() {
         // printEditAccount
-
+        System.out.println(wholeLine('-', WIDTH, Alignment.CENTER, NO_BORDER));
+        
+        Customer c = new Customer("Fabian", "Duerkop", "abcstrasse", "14", "38554", "Weyhausen");
+        String[] customerInfo = c.print();
+        for(String s : customerInfo) {
+            System.out.println(stringToConsole(s, Alignment.LEFT, BORDER));
+            
+        }
+        
+        System.out.println(wholeLine('-', WIDTH, Alignment.CENTER, NO_BORDER));
     }
 
     private void printEditAccount() {

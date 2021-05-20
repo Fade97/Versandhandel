@@ -9,7 +9,7 @@ public class Main {
 		ConsoleHandler cHandler = new ConsoleHandler();
 		cHandler.start();
 		//Erik
-		Customer newCustomer = new Customer("Erik", "Garcia", "Wollgrasweg", "18", "38446", "Wolfsburg", 123456);
+		Customer newCustomer = new Customer("Erik", "Garcia", "Wollgrasweg", "18", "38446", "Wolfsburg");
 	}
 
 }
