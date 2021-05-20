@@ -1,1 +1,4 @@
 CustomerNr,Firstname,Lastname,Street,Housenr,ZipCode,City
+1000,Huey,Duck,Duckstreet,13,12345,Duckburg
+1001,Dewey,Duck,Duckstreet,15,12345,Duckburg
+1002,Louie,Duck,Duckstreet,17,12345,Duckburg
