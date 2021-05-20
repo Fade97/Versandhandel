@@ -22,7 +22,7 @@ public class Receipt {
         int numberOfItems = 0;
         for (Product product : shoppingCart) {
             if (product != null) {
-                numberOfItems++;
+                numberOfItems += product.getQuantity();
             }
         }
         return numberOfItems;

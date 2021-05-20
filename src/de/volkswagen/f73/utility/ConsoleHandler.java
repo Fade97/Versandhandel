@@ -1,6 +1,7 @@
 package de.volkswagen.f73.utility;
 
 import java.nio.channels.SelectableChannel;
+import java.text.DecimalFormat;
 import java.util.IllegalFormatException;
 import java.util.InputMismatchException;
 import java.util.Scanner;
@@ -14,7 +15,7 @@ import de.volkswagen.f73.*;
 public class ConsoleHandler {
 
     private static final int WIDTH = 55;
-    private static final int HEIGHT = 8;
+    private static final int HEIGHT = 11;
 
     private static final boolean BORDER = true;
     private static final boolean NO_BORDER = false;
@@ -167,12 +168,12 @@ public class ConsoleHandler {
             customer.addReceipt(receipt);
         }
         
-        int iProductCnt = 0;
+        int iProductCnt = receipt.getNumberOfItems();
         double dValue = receipt.getTotalPrice();
         // Test end
         String retCommand = "";
-
-        int staticLines = 5;
+        DecimalFormat df = new DecimalFormat("#.##");
+        int staticLines = 6;
         int productsPerPage = (HEIGHT - staticLines);
 
         while (products.length - ((productPage) * productsPerPage) <= 0) {
@@ -189,7 +190,7 @@ public class ConsoleHandler {
         // Products
         for (int i = 0; i < (HEIGHT - staticLines) && i + productPage * productsPerPage < products.length; i++) {
             String left = "" + i + ") " + products[i + productPage * (HEIGHT - staticLines)].getName();
-            String right = products[i + productPage * (HEIGHT - staticLines)].getPrice() + "\u20AC";
+            String right = df.format(products[i + productPage * (HEIGHT - staticLines)].getPrice()) + "\u20AC";
             System.out.println(stringToConsole(left + addPadding(left.length(), right.length(), BORDER) + right,
                     Alignment.LEFT, BORDER));
         }
@@ -200,8 +201,9 @@ public class ConsoleHandler {
         }
         
         // Footer
+        System.out.println(wholeLine('-', 7, Alignment.RIGHT, BORDER));
         String sLeft = "Warenkorb  " + iProductCnt + " Artikel";
-        String sRight = dValue + "\u20AC";
+        String sRight = df.format(dValue) + "\u20AC";
         System.out.println(stringToConsole(sLeft + addPadding(sLeft.length(), sRight.length(), BORDER) + sRight,
                 Alignment.CENTER, BORDER));
 
@@ -225,13 +227,12 @@ public class ConsoleHandler {
         try {
             int selectedIndex = Integer.parseInt(retCommand);
             if(selectedIndex + productPage * productsPerPage < products.length && selectedIndex < productsPerPage) {
-                System.out.println("Selected id " + (selectedIndex + productPage * productsPerPage));
+                Product p = products[selectedIndex + productPage * productsPerPage];
+                receipt.addProductToCart(p, 1);
             }
-            Product p = products[selectedIndex];
-            receipt.addProductToCart(p, 1);
-        } catch(NumberFormatException e) {
+        } catch(Exception e) {
             
-        }
+        } 
 
         return retCommand;
     }
