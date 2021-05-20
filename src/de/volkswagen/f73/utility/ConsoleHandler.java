@@ -38,7 +38,7 @@ public class ConsoleHandler {
         Scanner sc = new Scanner(System.in);
         String auswahl = "";
 
-        
+        printError("Test");
         printWelcome();
         printAccount();
         sc.nextLine();
@@ -311,8 +311,21 @@ public class ConsoleHandler {
         /**
          * |--------------------------| | Error | |--------------------------|
          */
-        System.out.println(wholeLine('-', WIDTH, Alignment.CENTER, NO_BORDER));
-        System.out.println(stringToConsole(errorMessage, Alignment.CENTER, BORDER));
-        System.out.println(wholeLine('-', WIDTH, Alignment.CENTER, NO_BORDER));
+        System.err.println(wholeLine('-', WIDTH, Alignment.CENTER, NO_BORDER));
+        
+        String tempText = wholeLineMulti(' ', WIDTH - 2, Alignment.CENTER, BORDER,
+                (int) (Math.floor((HEIGHT - 3) / 2.0)));
+        if (!tempText.isEmpty()) {
+            System.err.println(tempText);
+        }
+        
+        System.err.println(stringToConsole(errorMessage, Alignment.CENTER, BORDER));
+        
+        tempText = wholeLineMulti(' ', WIDTH - 2, Alignment.CENTER, BORDER, (int) (Math.ceil((HEIGHT - 3) / 2.0)));
+        if (!tempText.isEmpty()) {
+            System.err.println(tempText);
+        }
+        
+        System.err.println(wholeLine('-', WIDTH, Alignment.CENTER, NO_BORDER));
     }
 }
