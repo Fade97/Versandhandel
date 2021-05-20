@@ -11,12 +11,14 @@ import de.volkswagen.f73.*;
  */
 public class ConsoleHandler {
 
-    private static int WIDTH = 55;
-    private static int HEIGHT = 10;
+    private static final int WIDTH = 55;
+    private static final int HEIGHT = 9;
 
-    private static boolean BORDER = true;
-    private static boolean NO_BORDER = false;
+    private static final boolean BORDER = true;
+    private static final boolean NO_BORDER = false;
 
+    private int productPage;
+    
     /**
      * Possible alignment options
      * <p>
@@ -36,7 +38,7 @@ public class ConsoleHandler {
         Scanner sc = new Scanner(System.in);
         String auswahl = "";
 
-        
+        printError("Test");
         printWelcome();
         printAccount();
         sc.nextLine();
@@ -44,14 +46,14 @@ public class ConsoleHandler {
         printLogin();
         String kundenNr = sc.nextLine();
         System.err.println(kundenNr);
-        int page = 0;
+        productPage = 0;
         while (!auswahl.equals("x")) {
-            printProducts(page);
+            printProducts();
             auswahl = sc.nextLine();
             if (auswahl.equals("n")) {
-                page++;
-            } else if (auswahl.equals("v") && page > 0) {
-                page--;
+                productPage++;
+            } else if (auswahl.equals("v") && productPage > 0) {
+                productPage--;
             }
         }
     }
@@ -133,7 +135,7 @@ public class ConsoleHandler {
      * Warenkorb: 4 Artikel | 12.30� Seite 1/10 x: n�chste Seite
      */
 
-    private void printProducts(int page) {
+    private void printProducts() {
         // Test
         Product[] products = Storage.getProducts();
         
@@ -144,14 +146,23 @@ public class ConsoleHandler {
         int staticLines = 5;
         int productsPerPage = (HEIGHT - staticLines);
         
+        while(products.length - ((productPage) * productsPerPage) <= 0)
+        {
+            if(productPage <= 0)
+            {
+                break;
+            }
+            productPage--;
+        }
+        
         System.out.println(wholeLine('-', WIDTH, Alignment.CENTER, NO_BORDER));
 
         System.out.println(stringToConsole("Produkte", Alignment.CENTER, BORDER));
 
         
-        for (int i = 0; i < (HEIGHT - staticLines) && i + page * productsPerPage < products.length; i++) {
-            String left = "" + i + ") " + products[i + page * (HEIGHT - staticLines)].getName();
-            String right = products[i + page * (HEIGHT - staticLines)].getPrice() + "\u20AC";
+        for (int i = 0; i < (HEIGHT - staticLines) && i + productPage * productsPerPage < products.length; i++) {
+            String left = "" + i + ") " + products[i + productPage * (HEIGHT - staticLines)].getName();
+            String right = products[i + productPage * (HEIGHT - staticLines)].getPrice() + "\u20AC";
             System.out.println(stringToConsole(left + addPadding(left.length(), right.length(), BORDER) + right, Alignment.LEFT, BORDER));
         }
 
@@ -165,7 +176,7 @@ public class ConsoleHandler {
         System.out.println(stringToConsole(sLeft + addPadding(sLeft.length(), sRight.length(), BORDER) + sRight,
                 Alignment.CENTER, BORDER));
 
-        sLeft = "Seite " + (page + 1) + "/" + ((int) Math.ceil(products.length / (HEIGHT - staticLines * 1.0)));
+        sLeft = "Seite " + (productPage + 1) + "/" + ((int) Math.ceil(products.length / (HEIGHT - staticLines * 1.0)));
         sRight = "v) vorherige n) n\u00e4chste Seite  x) zur\u00fcck";
         System.out.println(stringToConsole(sLeft + addPadding(sLeft.length(), sRight.length(), BORDER) + sRight,
                 Alignment.CENTER, BORDER));
@@ -300,8 +311,21 @@ public class ConsoleHandler {
         /**
          * |--------------------------| | Error | |--------------------------|
          */
-        System.out.println(wholeLine('-', WIDTH, Alignment.CENTER, NO_BORDER));
-        System.out.println(stringToConsole(errorMessage, Alignment.CENTER, BORDER));
-        System.out.println(wholeLine('-', WIDTH, Alignment.CENTER, NO_BORDER));
+        System.err.println(wholeLine('-', WIDTH, Alignment.CENTER, NO_BORDER));
+        
+        String tempText = wholeLineMulti(' ', WIDTH - 2, Alignment.CENTER, BORDER,
+                (int) (Math.floor((HEIGHT - 3) / 2.0)));
+        if (!tempText.isEmpty()) {
+            System.err.println(tempText);
+        }
+        
+        System.err.println(stringToConsole(errorMessage, Alignment.CENTER, BORDER));
+        
+        tempText = wholeLineMulti(' ', WIDTH - 2, Alignment.CENTER, BORDER, (int) (Math.ceil((HEIGHT - 3) / 2.0)));
+        if (!tempText.isEmpty()) {
+            System.err.println(tempText);
+        }
+        
+        System.err.println(wholeLine('-', WIDTH, Alignment.CENTER, NO_BORDER));
     }
 }
