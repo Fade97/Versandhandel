@@ -9,9 +9,12 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 
 import de.volkswagen.f73.Customer;
+import de.volkswagen.f73.Product;
+import de.volkswagen.f73.Receipt;
 
 public class CsvHandler {
 	static String fileName = "Export.csv";
+	static String fileNameReceipt = "Receipts.csv";
 
 	public static Customer[] loadCustomers() {
 		BufferedReader reader;
@@ -57,8 +60,8 @@ public class CsvHandler {
 	public static boolean saveCustomers(Customer[] customers) {
 		boolean fileIsSaved = true;
 		try (BufferedWriter writer = Files.newBufferedWriter(Paths.get(fileName));) {
-				String tableHead = "CustomerNr,Firstname,Lastname,Street,Housenr,ZipCode,City";
-				writer.write(tableHead);
+				String tableHeader = "CustomerNr,Firstname,Lastname,Street,Housenr,ZipCode,City";
+				writer.write(tableHeader);
 				writer.newLine();
 			for (int i = 0 ; i < customers.length ; i++) {
 				String oneCustomer = (String.valueOf(customers[i].getCustomerNr()) + "," + customers[i].getFirstName() + "," + customers[i].getLastName() + "," + customers[i].getAddress().getStreet() + "," + customers[i].getAddress().getHouseNr() + "," + customers[i].getAddress().getZipCode() + "," + customers[i].getAddress().getCity());
@@ -75,6 +78,32 @@ public class CsvHandler {
 			
 		}
 		return fileIsSaved;
+	}
+	
+	public static boolean saveReceipt(Customer[] customers, Receipt[] receipts, Product[] shoppingCart) {
+		boolean fileIsSaved = true;
+		try (BufferedWriter writer = Files.newBufferedWriter(Paths.get(fileNameReceipt));){
+			String tableHeader = "ReceiptNr,CustomerNr,InventoryNr,Quantity,netPrice,Tax,grossPrice";
+			writer.write(tableHeader);
+			writer.newLine();
+			for (int i = 0 ; i < customers.length ; i++) { //Shleife Customer
+				for (int n = 0 ; n < receipts.length ; n++ ) { //Schleife Receipt
+					for (int j = 0 ; j < shoppingCart.length ; j++) { // Schleife Cart
+						String oneLineOfOneRecipe = (String.valueOf(customers[i].getReceipts()[n].getReceiptNr()) + " " + String.valueOf(customers[i].getCustomerNr()) + " " + String.valueOf(customers[i].getReceipts()[n].getShoppingCart()[j].getInventoryNr()) + " " + String.valueOf(customers[i].getReceipts()[n].getShoppingCart()[j].getQuantity()) + " " + String.valueOf(customers[i].getReceipts()[n].getShoppingCart()[j].getPrice()) + " " + customers[i].getReceipts()[n].getShoppingCart()[j].getTax() + " " + String.valueOf(customers[i].getReceipts()[n].calculateGrossPrice(customers[i].getReceipts()[n].getShoppingCart()[j].getPrice(),customers[i].getReceipts()[n].getShoppingCart()[j].getTax())));
+					    writer.write(oneLineOfOneRecipe);
+					    writer.newLine();
+					}
+				}
+			}
+			System.out.println("Export: " + fileNameReceipt + " wurde erstellt");
+			writer.close();
+			
+		} catch (Exception e) {
+			System.out.println("Expection beim Speichern eingetreten!");
+			fileIsSaved = false;
+		}
+		
+		return false;
 	}
 
 }
