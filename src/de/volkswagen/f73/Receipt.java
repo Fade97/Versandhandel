@@ -84,11 +84,15 @@ public class Receipt {
         double sum = 0.0;
         for (Product product : shoppingCart) {
             if (product != null) {
-                sum += (((double)product.getQuantity()) * ((double)product.getPrice())) / (100.0) * (100.0 + product.getTax().percentage);
+                sum += calculateGrossPrice((((double)product.getQuantity()) * ((double)product.getPrice())), product.getTax());
                 System.out.println(sum);
             }
         }
         this.totalPrice = sum;
+    }
+    
+    public double calculateGrossPrice(double netPrice, TaxRates taxrate) {
+        return netPrice / 100.0 * (100.0 + taxrate.percentage);
     }
     
     //RemoveFromCart Methode
