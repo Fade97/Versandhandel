@@ -301,7 +301,14 @@ public class ConsoleHandler {
             customer.addReceipt(receipt);
         }
         Product[] tempProducts = receipt.getShoppingCart();
-        Product[] products = new Product[receipt.getNumberOfItems()];
+        int productCount = 0;
+        for(int i = 0; i < tempProducts.length; i++) {
+            if(tempProducts[i] != null)
+            {
+                productCount++;
+            }
+        }
+        Product[] products = new Product[productCount];
         int j = 0;
         for(int i = 0; i < tempProducts.length; i++)
         {
@@ -369,7 +376,7 @@ public class ConsoleHandler {
             if (selectedIndex + productPage * productsPerPage < products.length && selectedIndex < productsPerPage) {
                 Product p = products[selectedIndex + productPage * productsPerPage];
                 System.out.println(p.getName() + " - 1");
-                // receipt.addProductToCart(p, 1);
+                receipt.removeProductFromCart(p, 1);
             }
         } catch (Exception e) {
 
