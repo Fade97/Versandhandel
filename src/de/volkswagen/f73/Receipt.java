@@ -4,6 +4,13 @@ public class Receipt {
     private Product[] shoppingCart = new Product[Storage.MAX_PRODUCTS];
     private double totalPrice = 0.0;
     private boolean isPaid;
+    private int receiptNr =  0;
+    private static int receiptNrCount = 0;
+    
+    public Receipt() {
+        this.receiptNr = 1000 + receiptNrCount++;
+        System.out.println(receiptNr);
+    }
     
     //----- Getter -----
     public Product[] getShoppingCart() {
