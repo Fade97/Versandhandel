@@ -98,20 +98,21 @@ public class CsvHandler {
                         Product[] shoppingCart = receipts[n].getShoppingCart();
                         for (int j = 0; j < shoppingCart.length; j++) { // Schleife Cart
                             if (shoppingCart[j] != null) {
+                            	Product thisCart = customers[i].getReceipts()[n].getShoppingCart()[j];
                                 String oneLineOfOneRecipe = (String
                                         .valueOf(customers[i].getReceipts()[n].getReceiptNr()) + delimiter
                                         + String.valueOf(customers[i].getCustomerNr()) + delimiter
                                         + String.valueOf(
-                                                customers[i].getReceipts()[n].getShoppingCart()[j].getInventoryNr())
+                                        		thisCart.getInventoryNr())
                                         + delimiter
                                         + String.valueOf(
-                                                customers[i].getReceipts()[n].getShoppingCart()[j].getQuantity())
+                                                thisCart.getQuantity())
                                         + delimiter
-                                        + String.valueOf(customers[i].getReceipts()[n].getShoppingCart()[j].getPrice())
-                                        + delimiter + customers[i].getReceipts()[n].getShoppingCart()[j].getTax() + delimiter
+                                        + String.valueOf((thisCart.getPrice()) * thisCart.getQuantity()).replace('.', ',')
+                                        + delimiter + thisCart.getTax() + delimiter
                                         + String.valueOf(Receipt.calculateGrossPrice(
-                                                customers[i].getReceipts()[n].getShoppingCart()[j].getPrice(),
-                                                customers[i].getReceipts()[n].getShoppingCart()[j].getTax())));
+                                        		thisCart.getPrice(),
+                                        		thisCart.getTax()) * thisCart.getQuantity()).replace('.', ','));
                                 writer.write(oneLineOfOneRecipe);
                                 writer.newLine();
                             }
