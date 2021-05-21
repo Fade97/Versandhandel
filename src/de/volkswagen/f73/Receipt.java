@@ -30,6 +30,9 @@ public class Receipt {
     
     //----- Methoden -----
     public void addProductToCart(Product productToAdd, int quantity) {
+        if(quantity < 0) {
+            return;
+        }
         for (int i = 0; i < shoppingCart.length; i++) {
             
             if (shoppingCart[i] == null && Storage.getStock(productToAdd) - quantity >= 0) {
