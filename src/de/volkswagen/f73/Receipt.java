@@ -85,7 +85,6 @@ public class Receipt {
         for (Product product : shoppingCart) {
             if (product != null) {
                 sum += calculateGrossPrice((((double)product.getQuantity()) * ((double)product.getPrice())), product.getTax());
-                System.out.println(sum);
             }
         }
         this.totalPrice = sum;
