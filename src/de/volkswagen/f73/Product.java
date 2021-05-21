@@ -5,15 +5,18 @@ import java.util.Random;
 public class Product {
     private String name;
     private double price;
-    private String inventoryNr = null;
+    //private String inventoryNr = null; <---- temporär ersetzt
+    private int inventoryNr =  0;
+    private static int inventoryNrCount = 0;
     private int quantity;
     private TaxRates tax;
     private Category category;
     
     public enum Category{FRUITS, VEGETABLES, MEAT, FISH, MILK_PRODUCTS, BREAD, DRINKS, NON_FOOD;}
 
-    private static final int INVENTORY_NR_LENGTH = 5;
-    private static String[] inventoryNumbers = new String[Storage.MAX_PRODUCTS];
+    //private static final int INVENTORY_NR_LENGTH = 5; <---- temporär ungenutzt
+    //private static String[] inventoryNumbers = new String[Storage.MAX_PRODUCTS]; <---- temporär ersetzt
+    
 
     //----- Konstruktoren -----
     public Product(String name, double price, int quantity, Category category, TaxRates tax) {
@@ -22,8 +25,9 @@ public class Product {
         this.quantity = quantity;
         this.tax = tax;
         this.category = category;
-        if (this.inventoryNr == null) {
-            this.inventoryNr = generateInventoryNr();
+        if (this.inventoryNr == 0) {
+            //this.inventoryNr = generateInventoryNr(); <---- generateInventoryNr() temporär ersetzt durch einfache variablenhochzählung
+            this.inventoryNr = 1000 + inventoryNrCount++;
         }
     }
     
@@ -41,7 +45,11 @@ public class Product {
         return this.price;
     }
 
-    public String getInventoryNr() {
+//    public String getInventoryNr() {
+//        return this.inventoryNr;
+//    }
+    
+    public int getInventoryNr() {
         return this.inventoryNr;
     }
 
@@ -68,37 +76,41 @@ public class Product {
         this.price = newPrice;
     }
     
-    private void setInventoryNr(String invNr) {
+//    private void setInventoryNr(String invNr) {
+//        this.inventoryNr = invNr;
+//    }
+    
+    private void setInventoryNr(int invNr) {
         this.inventoryNr = invNr;
     }
 
     //----- Methoden -----
-    private String generateInventoryNr() {
-        Random rand = new Random();
-        String inventoryNr = "";
-        boolean isValidNr = true;
-
-        do {
-            // Nummer String generieren
-            for (int i = 0; i < INVENTORY_NR_LENGTH; i++) {
-                inventoryNr += rand.nextInt(10);
-            }
-            // Prüfen ob Nr bereits vergeben
-            for (String i : inventoryNumbers) {
-                if (i != null && i.equals(inventoryNr)) {
-                    isValidNr = false;
-                }
-            }
-        } while (!isValidNr);
-        //Neue Nummer aufnehmen an nächster Freier Stelle
-        for (int i = 0; i < Storage.MAX_PRODUCTS; i++) {
-            if (inventoryNumbers[i] == null) {
-                inventoryNumbers[i] = inventoryNr;
-                break;
-            }
-        }
-        return inventoryNr;
-    }
+//    private String generateInventoryNr() {
+//        Random rand = new Random();
+//        String inventoryNr = "";
+//        boolean isValidNr = true;
+//
+//        do {
+//            // Nummer String generieren
+//            for (int i = 0; i < INVENTORY_NR_LENGTH; i++) {
+//                inventoryNr += rand.nextInt(10);
+//            }
+//            // Prüfen ob Nr bereits vergeben
+//            for (String i : inventoryNumbers) {
+//                if (i != null && i.equals(inventoryNr)) {
+//                    isValidNr = false;
+//                }
+//            }
+//        } while (!isValidNr);
+//        //Neue Nummer aufnehmen an nächster Freier Stelle
+//        for (int i = 0; i < Storage.MAX_PRODUCTS; i++) {
+//            if (inventoryNumbers[i] == null) {
+//                inventoryNumbers[i] = inventoryNr;
+//                break;
+//            }
+//        }
+//        return inventoryNr;
+//    }
     
     public boolean equals(Product product) {
         return this.getInventoryNr() == product.getInventoryNr();
