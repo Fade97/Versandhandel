@@ -18,6 +18,10 @@ public class Receipt {
         return this.isPaid;
     }
     
+    public void setPaid(boolean paid) {
+        this.isPaid = paid;
+    }
+    
     public int getNumberOfItems() {
         int numberOfItems = 0;
         for (Product product : shoppingCart) {

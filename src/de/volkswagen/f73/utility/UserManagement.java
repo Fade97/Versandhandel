@@ -7,7 +7,10 @@ public class UserManagement {
     private static UserManagement instance;
 
     private Customer[] customers;
-
+    /**
+     * Singleton Pattern
+     * @return
+     */
     public static UserManagement instance() {
         if (instance == null) {
             instance = new UserManagement();

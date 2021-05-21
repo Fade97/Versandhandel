@@ -40,26 +40,52 @@ public class ConsoleHandler {
         // Produkte anzeigen
         // Produkt ausw�hlen
         Scanner sc = new Scanner(System.in);
-        String auswahl = "";
+        
 
         printWelcome();
         printLogin();
-        printAccount();
-        sc.nextLine();
+        String menuAuswahl = "";
+        do {
+            menuAuswahl = printMenu();
+            switch (menuAuswahl) {
+            case "0":
+                printAccount();
+                sc.nextLine();
+                break;
+            case "1":
+                productPage = 0;
+                String auswahl = "";
+                while (!auswahl.equals("x")) {
+                    auswahl = printProducts();
+//                    if (!auswahl.equals("n") && !auswahl.equals("v") && !auswahl.equals("x")) {
+//                        auswahl = sc.nextLine();
+//                    }
+                    if (auswahl.equals("n")) {
+                        productPage++;
+                    } else if (auswahl.equals("v") && productPage > 0) {
+                        productPage--;
+                    } else if(auswahl.equals("w")) {
+                        productPage = 0;
+                        while (!auswahl.equals("x")) {
+                            auswahl = printWarenkorb();
+                            if (auswahl.equals("n")) {
+                                productPage++;
+                            } else if (auswahl.equals("v") && productPage > 0) {
+                                productPage--;
+                            } 
+                        }
+                        auswahl = "";
+                    }
+                }
+                break;
 
-
-        productPage = 0;
-        while (!auswahl.equals("x")) {
-            auswahl = printProducts();
-//            if (!auswahl.equals("n") && !auswahl.equals("v") && !auswahl.equals("x")) {
-//                auswahl = sc.nextLine();
-//            }
-            if (auswahl.equals("n")) {
-                productPage++;
-            } else if (auswahl.equals("v") && productPage > 0) {
-                productPage--;
+            default:
+                break;
             }
-        }
+            
+        } while(!menuAuswahl.equals("x"));
+        
+        
     }
 
     private void printWelcome() {
@@ -120,11 +146,38 @@ public class ConsoleHandler {
         return false;
     }
 
-    private void printMenu() {
+    private String printMenu() {
         /**
          * printAccount printProducts
          * 
          */
+        final int staticLines = 7;
+        System.out.println(wholeLine('-', WIDTH, Alignment.CENTER, NO_BORDER));
+        System.out.println(stringToConsole("Menu", Alignment.CENTER, BORDER));
+        
+        System.out.println(stringToConsole("0) Kundenkonto bearbeiten", Alignment.LEFT, BORDER));
+        System.out.println(stringToConsole("1) Produkte kaufen", Alignment.LEFT, BORDER));
+        System.out.println(stringToConsole("2) Rechnungen anzeigen", Alignment.LEFT, BORDER));
+        
+        String tempText = wholeLineMulti(' ', WIDTH - 2, Alignment.CENTER, BORDER,
+                (int) (Math.floor((HEIGHT - staticLines) / 2.0)));
+        if (!tempText.isEmpty()) {
+            System.out.println(tempText);
+        }
+        tempText = wholeLineMulti(' ', WIDTH - 2, Alignment.CENTER, BORDER, (int) (Math.ceil((HEIGHT - staticLines) / 2.0)));
+        if (!tempText.isEmpty()) {
+            System.out.println(tempText);
+        }
+
+        System.out.println(stringToConsole("x) beenden", Alignment.RIGHT, BORDER));
+        System.out.println(wholeLine('-', WIDTH, Alignment.CENTER, NO_BORDER));
+        
+        Scanner sc = new Scanner(System.in);
+        String auswahl = "";
+        while(!auswahl.equals("x") && !auswahl.equals("0") && !auswahl.equals("1") && !auswahl.equals("2") ) {
+            auswahl = sc.nextLine();
+        }
+        return auswahl;        
     }
 
     private void printAccount() {
@@ -144,30 +197,25 @@ public class ConsoleHandler {
 
     }
 
-    /**
-     * Produkte _______________________________ 1) Banane 2) Erdbeere . . .
-     * Warenkorb: 4 Artikel | 12.30� Seite 1/10 x: n�chste Seite
-     */
-
     private String printProducts() {
         // Test
         Product[] products = Storage.getProducts();
 
         Receipt[] receipts = customer.getReceipts();
         Receipt receipt = null;
-        if(receipts != null) {
-            for(Receipt r : receipts) {
-                if(!r.isPaid()) {
+        if (receipts != null) {
+            for (Receipt r : receipts) {
+                if (!r.isPaid()) {
                     receipt = r;
                     break;
                 }
             }
         }
-        if(receipt == null) {
+        if (receipt == null) {
             receipt = new Receipt();
             customer.addReceipt(receipt);
         }
-        
+
         int iProductCnt = receipt.getNumberOfItems();
         double dValue = receipt.getTotalPrice();
         // Test end
@@ -196,13 +244,13 @@ public class ConsoleHandler {
         }
 
         if (HEIGHT - staticLines - (products.length - productsPerPage * productPage) > 0) {
-            System.out.println(
-                    wholeLineMulti(' ', WIDTH - 2, Alignment.CENTER, BORDER, HEIGHT - staticLines - (products.length - productsPerPage * productPage)));
+            System.out.println(wholeLineMulti(' ', WIDTH - 2, Alignment.CENTER, BORDER,
+                    HEIGHT - staticLines - (products.length - productsPerPage * productPage)));
         }
-        
+
         // Footer
         System.out.println(wholeLine('-', 7, Alignment.RIGHT, BORDER));
-        String sLeft = "Warenkorb  " + iProductCnt + " Artikel";
+        String sLeft = "w) Warenkorb " + iProductCnt + " Artikel";
         String sRight = df.format(dValue) + "\u20AC";
         System.out.println(stringToConsole(sLeft + addPadding(sLeft.length(), sRight.length(), BORDER) + sRight,
                 Alignment.CENTER, BORDER));
@@ -226,14 +274,114 @@ public class ConsoleHandler {
         retCommand = sc.nextLine();
         try {
             int selectedIndex = Integer.parseInt(retCommand);
-            if(selectedIndex + productPage * productsPerPage < products.length && selectedIndex < productsPerPage) {
+            if (selectedIndex + productPage * productsPerPage < products.length && selectedIndex < productsPerPage) {
                 Product p = products[selectedIndex + productPage * productsPerPage];
                 receipt.addProductToCart(p, 1);
             }
-        } catch(Exception e) {
-            
-        } 
+        } catch (Exception e) {
 
+        }
+
+        return retCommand;
+    }
+    
+    private String printWarenkorb() {
+        Receipt[] receipts = customer.getReceipts();
+        Receipt receipt = null;
+        if (receipts != null) {
+            for (Receipt r : receipts) {
+                if (!r.isPaid()) {
+                    receipt = r;
+                    break;
+                }
+            }
+        }
+        if (receipt == null) {
+            receipt = new Receipt();
+            customer.addReceipt(receipt);
+        }
+        Product[] tempProducts = receipt.getShoppingCart();
+        Product[] products = new Product[receipt.getNumberOfItems()];
+        int j = 0;
+        for(int i = 0; i < tempProducts.length; i++)
+        {
+            if(tempProducts[i] != null)
+            {
+                products[j] = tempProducts[i];
+                j++;
+            }
+        }
+        
+        DecimalFormat df = new DecimalFormat("#.##");
+        int staticLines = 6;
+        int productsPerPage = (HEIGHT - staticLines);
+        
+        while (products.length - ((productPage) * productsPerPage) <= 0) {
+            if (productPage <= 0) {
+                break;
+            }
+            productPage--;
+        }
+        
+        System.out.println(wholeLine('-', WIDTH, Alignment.CENTER, NO_BORDER));
+        System.out.println(stringToConsole("Warenkorb", Alignment.CENTER, BORDER));
+
+        // Products
+        for (int i = 0; i < (HEIGHT - staticLines) && i + productPage * productsPerPage < products.length; i++) {
+            Product thisProduct = products[i + productPage * (HEIGHT - staticLines)];
+            String left = "" + i + ") " + thisProduct.getName();
+            String right = thisProduct.getQuantity() + "x " + df.format(thisProduct.getPrice() * thisProduct.getQuantity()) + "\u20AC";
+            System.out.println(stringToConsole(left + addPadding(left.length(), right.length(), BORDER) + right,
+                    Alignment.LEFT, BORDER));
+        }
+
+        if (HEIGHT - staticLines - (products.length - productsPerPage * productPage) > 0) {
+            System.out.println(wholeLineMulti(' ', WIDTH - 2, Alignment.CENTER, BORDER,
+                    HEIGHT - staticLines - (products.length - productsPerPage * productPage)));
+        }
+
+        // Footer
+        System.out.println(wholeLine('-', 7, Alignment.RIGHT, BORDER));
+
+        System.out.println(stringToConsole(df.format(receipt.getTotalPrice()) + "\u20AC", Alignment.RIGHT, BORDER));
+        
+        String sLeft = "Seite " + (productPage + 1) + "/" + ((int) Math.ceil(products.length / (HEIGHT - staticLines * 1.0)));
+        String sRight = "";
+        if (productPage + 1 != 1) {
+            sRight += "v) vorherige";
+        }
+        if (((int) Math.ceil(products.length / (HEIGHT - staticLines * 1.0))) != productPage + 1) {
+            sRight += " n) n\u00e4chste Seite";
+        }
+
+        if(receipt.getNumberOfItems() > 0) {
+            sRight += " k) kaufen";            
+        }
+        sRight += " x) zur\u00fcck";
+        System.out.println(stringToConsole(sLeft + addPadding(sLeft.length(), sRight.length(), BORDER) + sRight,
+                Alignment.CENTER, BORDER));
+        System.out.println(wholeLine('-', WIDTH, Alignment.CENTER, NO_BORDER));
+        
+        Scanner sc = new Scanner(System.in);
+        String retCommand = sc.nextLine();
+        try {
+            int selectedIndex = Integer.parseInt(retCommand);
+            if (selectedIndex + productPage * productsPerPage < products.length && selectedIndex < productsPerPage) {
+                Product p = products[selectedIndex + productPage * productsPerPage];
+                System.out.println(p.getName() + " - 1");
+                // receipt.addProductToCart(p, 1);
+            }
+        } catch (Exception e) {
+
+        }
+        if(retCommand.equals("k")) {
+            if(receipt.getTotalPrice() > 0.0) {
+                receipt.setPaid(true);
+                
+            }
+            retCommand = "x";
+        }
+        
         return retCommand;
     }
 
