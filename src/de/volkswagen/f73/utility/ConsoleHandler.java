@@ -362,8 +362,8 @@ public class ConsoleHandler {
         // Products
         for (int i = 0; i < (HEIGHT - staticLines) && i + productPage * productsPerPage < products.length; i++) {
             Product thisProduct = products[i + productPage * (HEIGHT - staticLines)];
-            String left = "" + i + ") " + thisProduct.getName();
-            String right = thisProduct.getQuantity() + "x " + df.format(Receipt
+            String left = "" + i + ") " + thisProduct.getName() + " x" + thisProduct.getQuantity();
+            String right = df.format(Receipt
                     .calculateGrossPrice(thisProduct.getPrice() * thisProduct.getQuantity(), thisProduct.getTax()))
                     + "\u20AC";
             System.out.println(stringToConsole(left + addPadding(left.length(), right.length(), BORDER) + right,
