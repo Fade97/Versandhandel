@@ -75,7 +75,6 @@ public class Receipt {
                     break;
                 }
             }
-            
         }
         calculateTotalPrice();
     }
@@ -90,9 +89,7 @@ public class Receipt {
         this.totalPrice = sum;
     }
     
-    public double calculateGrossPrice(double netPrice, TaxRates taxrate) {
+    public static double calculateGrossPrice(double netPrice, TaxRates taxrate) {
         return netPrice / 100.0 * (100.0 + taxrate.percentage);
     }
-    
-    //RemoveFromCart Methode
 }
