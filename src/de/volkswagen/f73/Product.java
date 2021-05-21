@@ -32,7 +32,11 @@ public class Product {
     }
     
     public Product(Product product) {
-        this(product.getName(), product.getPrice(), product.getQuantity(), product.getCategory(), product.getTax());
+        this.name = product.getName();
+        this.price = product.getPrice();
+        this.quantity = product.getQuantity();
+        this.tax = product.getTax();
+        this.category = product.getCategory();
         this.setInventoryNr(product.getInventoryNr());
     }
 
