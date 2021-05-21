@@ -11,6 +11,7 @@ import java.nio.file.Paths;
 import de.volkswagen.f73.Customer;
 import de.volkswagen.f73.Product;
 import de.volkswagen.f73.Receipt;
+import de.volkswagen.f73.Storage;
 
 public class CsvHandler {
     static String fileName = "Export.csv";
@@ -132,4 +133,76 @@ public class CsvHandler {
         return false;
     }
 
+    public static Receipt[] loadReceipts() {
+		
+    	BufferedReader reader;
+        int receiptCount = 0;
+        try {
+            reader = new BufferedReader(new FileReader(Paths.get(fileNameReceipt).toString()));
+            int lines = 0;
+            while (reader.readLine() != null)
+                lines++;
+            receiptCount = lines - 1;
+            reader.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        if (receiptCount <= 0) {
+            return null;
+        }
+        Receipt[] receipts = new Receipt[receiptCount];
+        try {
+            reader = new BufferedReader(new FileReader(Paths.get(fileNameReceipt).toString()));
+            StringBuilder textRead = new StringBuilder();
+            String textLine = reader.readLine();
+            
+            for (int i = 0; i < receipts.length; i++) {
+                textRead.append(System.lineSeparator());
+                textLine = reader.readLine();
+                String[] tmp = textLine.split(delimiter);
+                Customer customer = UserManagement.instance().getUser(tmp[1]);
+                if (customer != null) {
+                	Receipt[] customerReceipts = customer.getReceipts();
+                	Receipt thisReceipt = null;
+                	for (Receipt n : customerReceipts) {
+                		if (n.getReceiptNr() == Integer.parseInt(tmp[0])) {
+                			thisReceipt = n;
+                			break;
+                		}
+                	}
+        			Product[] products = Storage.getProducts();
+        			Product thisProduct = null;
+        			if (products != null) {
+        				for (Product p : products) {
+        					if (p.getInventoryNr() == Integer.parseInt(tmp[2])) {
+        						thisProduct = new Product(p);
+        						break;
+        					}
+        				}
+        			}
+        			if (thisReceipt == null) {
+        			    thisReceipt = new Receipt(Integer.parseInt(tmp[0]));
+        				customer.addReceipt(thisReceipt);
+        			}
+        			if (thisProduct != null) {
+        				thisProduct.setPrice(Double.parseDouble(tmp[4])/Integer.parseInt(tmp[3]));
+        				thisReceipt.addProductToCart(thisProduct, Integer.parseInt(tmp[3]));
+        			}
+                }
+                // "ReceiptNr;CustomerNr;InventoryNr;Quantity;netPrice;Tax;grossPrice"
+            }
+            reader.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    	
+    	
+    	return null;
+    	
+    }
 }

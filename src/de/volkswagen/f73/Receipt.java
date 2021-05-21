@@ -12,6 +12,11 @@ public class Receipt {
         System.out.println(receiptNr);
     }
     
+    public Receipt(int receiptNr) {
+    	this.receiptNr = receiptNr;
+    	receiptNrCount++;
+    }
+    
     //----- Getter -----
     public int getReceiptNr() {
         return this.receiptNr;
