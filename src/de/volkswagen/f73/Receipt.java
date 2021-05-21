@@ -13,6 +13,10 @@ public class Receipt {
     }
     
     //----- Getter -----
+    public int getReceiptNr() {
+        return this.receiptNr;
+    }
+    
     public Product[] getShoppingCart() {
         return this.shoppingCart;
     }
