@@ -1,7 +1,7 @@
 package de.volkswagen.f73;
 
 public class Receipt {
-    private Product[] shoppingCart = new Product[Storage.MAX_PRODUCTS];
+    private Product[] shoppingCart = new Product[Storage.getMaxProducts()];
     private double totalPrice = 0.0;
     private boolean isPaid;
     private int receiptNr =  0;

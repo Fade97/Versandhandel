@@ -6,6 +6,7 @@ public class Main {
 
 	public static void main(String[] args) {
 	    //UserManagement.instance().addUser( new Customer("Erik", "Garcia", "Wollgrasweg", "18", "38446", "Wolfsburg") );
+	    CsvHandler.loadProducts();
 	    UserManagement.instance();
 		ConsoleHandler cHandler = new ConsoleHandler();
 		cHandler.start();

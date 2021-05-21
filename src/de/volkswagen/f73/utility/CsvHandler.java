@@ -7,15 +7,14 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Locale.Category;
 
-import de.volkswagen.f73.Customer;
-import de.volkswagen.f73.Product;
-import de.volkswagen.f73.Receipt;
-import de.volkswagen.f73.Storage;
+import de.volkswagen.f73.*;
 
 public class CsvHandler {
     static String fileName = "Export.csv";
     static String fileNameReceipt = "Receipts.csv";
+    static String fileNameProducts = "Products.csv";
     static final String delimiter = ";";
 
     public static Customer[] loadCustomers() {
@@ -204,5 +203,59 @@ public class CsvHandler {
 
         return null;
 
+    }
+
+    public static void loadProducts() {
+        String delimiterProducts = ",";
+        BufferedReader reader;
+        int productAmount = -1;
+        try {
+            reader = new BufferedReader(new FileReader(Paths.get(fileNameProducts).toString()));
+            while (reader.readLine() != null) {
+                productAmount++;
+            }
+            reader.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        if (productAmount <= 0) {
+            System.err.println("Keine Produkte Verfügbar");
+            return;
+        }
+        
+        Product[] products = new Product[productAmount];
+        try {
+            reader = new BufferedReader(new FileReader(Paths.get(fileNameProducts).toString()));
+            StringBuilder textRead = new StringBuilder();
+            String textLine = reader.readLine();
+            for (int i = 0; i < productAmount; i++) {
+                textRead.append(System.lineSeparator());
+                textLine = reader.readLine();
+                String[] productInfos = textLine.split(delimiterProducts);
+                Product.Category category = null;
+                TaxRates tax = null;
+                switch (productInfos[3]) {
+                case "FRUITS": category = Product.Category.FRUITS; break;
+                case "VEGETABLES": category = Product.Category.VEGETABLES; break;
+                case "MEAT": category = Product.Category.MEAT; break;
+                case "FISH": category = Product.Category.FISH; break;
+                case "MILK_PRODUCTS": category = Product.Category.MILK_PRODUCTS; break;
+                case "BREAD": category = Product.Category.BREAD; break;
+                case "DRINKS": category = Product.Category.DRINKS; break;
+                case "NON_FOOD": category = Product.Category.NON_FOOD; break;
+                }
+                if (productInfos[2].equals("TAX")) {
+                    tax = TaxRates.TAX;
+                }else {
+                    tax = TaxRates.REDUCED_TAX;
+                }
+                products[i] = new Product(productInfos[0], Double.parseDouble(productInfos[1]), Integer.parseInt(productInfos[2]), category, tax);
+            }
+            reader.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        Storage.setMaxProducts(productAmount);
+        Storage.products = products;
     }
 }
