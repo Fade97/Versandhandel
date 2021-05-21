@@ -66,9 +66,10 @@ public class CsvHandler {
             writer.write(tableHeader);
             writer.newLine();
             for (int i = 0; i < customers.length; i++) {
-                String oneCustomer = (String.valueOf(customers[i].getCustomerNr()) + delimiter + customers[i].getFirstName()
-                        + delimiter + customers[i].getLastName() + delimiter + customers[i].getAddress().getStreet() + delimiter
-                        + customers[i].getAddress().getHouseNr() + delimiter + customers[i].getAddress().getZipCode() + delimiter
+                String oneCustomer = (String.valueOf(customers[i].getCustomerNr()) + delimiter
+                        + customers[i].getFirstName() + delimiter + customers[i].getLastName() + delimiter
+                        + customers[i].getAddress().getStreet() + delimiter + customers[i].getAddress().getHouseNr()
+                        + delimiter + customers[i].getAddress().getZipCode() + delimiter
                         + customers[i].getAddress().getCity());
                 writer.write(oneCustomer);
                 writer.newLine();
@@ -99,21 +100,19 @@ public class CsvHandler {
                         Product[] shoppingCart = receipts[n].getShoppingCart();
                         for (int j = 0; j < shoppingCart.length; j++) { // Schleife Cart
                             if (shoppingCart[j] != null) {
-                            	Product thisCart = customers[i].getReceipts()[n].getShoppingCart()[j];
+                                Product thisCart = customers[i].getReceipts()[n].getShoppingCart()[j];
                                 String oneLineOfOneRecipe = (String
                                         .valueOf(customers[i].getReceipts()[n].getReceiptNr()) + delimiter
                                         + String.valueOf(customers[i].getCustomerNr()) + delimiter
+                                        + String.valueOf(thisCart.getInventoryNr()) + delimiter
+                                        + String.valueOf(thisCart.getQuantity()) + delimiter
                                         + String.valueOf(
-                                        		thisCart.getInventoryNr())
-                                        + delimiter
-                                        + String.valueOf(
-                                                thisCart.getQuantity())
-                                        + delimiter
-                                        + String.valueOf((thisCart.getPrice()) * thisCart.getQuantity()).replace('.', ',')
+                                                (thisCart.getPrice()) * thisCart.getQuantity()).replace('.', ',')
                                         + delimiter + thisCart.getTax() + delimiter
-                                        + String.valueOf(Receipt.calculateGrossPrice(
-                                        		thisCart.getPrice(),
-                                        		thisCart.getTax()) * thisCart.getQuantity()).replace('.', ','));
+                                        + String.valueOf(
+                                                Receipt.calculateGrossPrice(thisCart.getPrice(), thisCart.getTax())
+                                                        * thisCart.getQuantity())
+                                                .replace('.', ','));
                                 writer.write(oneLineOfOneRecipe);
                                 writer.newLine();
                             }
@@ -134,8 +133,8 @@ public class CsvHandler {
     }
 
     public static Receipt[] loadReceipts() {
-		
-    	BufferedReader reader;
+
+        BufferedReader reader;
         int receiptCount = 0;
         try {
             reader = new BufferedReader(new FileReader(Paths.get(fileNameReceipt).toString()));
@@ -157,39 +156,42 @@ public class CsvHandler {
             reader = new BufferedReader(new FileReader(Paths.get(fileNameReceipt).toString()));
             StringBuilder textRead = new StringBuilder();
             String textLine = reader.readLine();
-            
+
             for (int i = 0; i < receipts.length; i++) {
                 textRead.append(System.lineSeparator());
                 textLine = reader.readLine();
                 String[] tmp = textLine.split(delimiter);
                 Customer customer = UserManagement.instance().getUser(tmp[1]);
                 if (customer != null) {
-                	Receipt[] customerReceipts = customer.getReceipts();
-                	Receipt thisReceipt = null;
-                	for (Receipt n : customerReceipts) {
-                		if (n.getReceiptNr() == Integer.parseInt(tmp[0])) {
-                			thisReceipt = n;
-                			break;
-                		}
-                	}
-        			Product[] products = Storage.getProducts();
-        			Product thisProduct = null;
-        			if (products != null) {
-        				for (Product p : products) {
-        					if (p.getInventoryNr() == Integer.parseInt(tmp[2])) {
-        						thisProduct = new Product(p);
-        						break;
-        					}
-        				}
-        			}
-        			if (thisReceipt == null) {
-        			    thisReceipt = new Receipt(Integer.parseInt(tmp[0]));
-        				customer.addReceipt(thisReceipt);
-        			}
-        			if (thisProduct != null) {
-        				thisProduct.setPrice(Double.parseDouble(tmp[4])/Integer.parseInt(tmp[3]));
-        				thisReceipt.addProductToCart(thisProduct, Integer.parseInt(tmp[3]));
-        			}
+                    Receipt[] customerReceipts = customer.getReceipts();
+                    Receipt thisReceipt = null;
+                    if (customerReceipts != null) {
+                        for (Receipt n : customerReceipts) {
+                            if (n.getReceiptNr() == Integer.parseInt(tmp[0])) {
+                                thisReceipt = n;
+                                break;
+                            }
+                        }
+                    }
+                    Product[] products = Storage.getProducts();
+                    Product thisProduct = null;
+                    if (products != null) {
+                        for (Product p : products) {
+                            if (p.getInventoryNr() == Integer.parseInt(tmp[2])) {
+                                thisProduct = new Product(p);
+                                break;
+                            }
+                        }
+                    }
+                    if (thisReceipt == null) {
+                        thisReceipt = new Receipt(Integer.parseInt(tmp[0]));
+                        customer.addReceipt(thisReceipt);
+                    }
+                    if (thisProduct != null) {
+                        thisProduct.setPrice(Double.parseDouble(tmp[4].replace(',', '.')) / Integer.parseInt(tmp[3]));
+                        thisReceipt.addProductToCart(thisProduct, Integer.parseInt(tmp[3]));
+                        thisReceipt.setPaid(true);
+                    }
                 }
                 // "ReceiptNr;CustomerNr;InventoryNr;Quantity;netPrice;Tax;grossPrice"
             }
@@ -200,9 +202,7 @@ public class CsvHandler {
             e.printStackTrace();
         }
 
-    	
-    	
-    	return null;
-    	
+        return null;
+
     }
 }

@@ -14,13 +14,14 @@ public class UserManagement {
     public static UserManagement instance() {
         if (instance == null) {
             instance = new UserManagement();
+            
+            CsvHandler.loadReceipts();
         }
         return instance;
     }
 
     private UserManagement() {
         customers = CsvHandler.loadCustomers();
-        
     }
 
     public boolean save() {
