@@ -20,10 +20,14 @@ public class UserManagement {
 
     private UserManagement() {
         customers = CsvHandler.loadCustomers();
+        
     }
 
     public boolean save() {
-        return CsvHandler.saveCustomers(customers);
+        boolean ret = true;
+        ret &= CsvHandler.saveReceipt(this.customers);
+        ret &= CsvHandler.saveCustomers(customers);
+        return ret;
     }
 
     public boolean addUser(Customer c) {

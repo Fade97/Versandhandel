@@ -1,3 +1,2 @@
-CustomerNr,Firstname,Lastname,Street,Housenr,ZipCode,City
-1000,Erik,Garcia,Wollgrasweg,18,38446,Wolfsburg
-1001,Erik,Garcia,Wollgrasweg,18,38446,Wolfsburg
+CustomerNr;Firstname;Lastname;Street;Housenr;ZipCode;City
+1000;Erik;Garcia;Wollgrasweg;18;38446;Wolfsburg
