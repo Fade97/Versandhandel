@@ -29,6 +29,10 @@ public class Receipt {
         return this.isPaid;
     }
     
+    public void setPaid(boolean paid) {
+        this.isPaid = paid;
+    }
+    
     public int getNumberOfItems() {
         int numberOfItems = 0;
         for (Product product : shoppingCart) {
@@ -64,7 +68,7 @@ public class Receipt {
         for (int i = 0; i < shoppingCart.length; i++) {
             if (shoppingCart[i] != null && shoppingCart[i].equals(productToRemove)) {
                 if (shoppingCart[i].getQuantity() - quantityToRemove > 0) {
-                    shoppingCart[i].setQuantity(quantityToRemove);
+                    shoppingCart[i].setQuantity(shoppingCart[i].getQuantity() - quantityToRemove);
                     break;
                 } else {
                     shoppingCart[i] = null;
