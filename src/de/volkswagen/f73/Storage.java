@@ -25,6 +25,9 @@ public class Storage {
     }
     
     public static Product[] getProducts(Category category) {
+        if (category == Category.NO_CATEGORY) {
+            return products;
+        }
         int itemCount = 0;
         for (Product product : products) {
             if (product.getCategory() == category) {
@@ -33,11 +36,14 @@ public class Storage {
         }
         Product[] selectedProducts;
         if (itemCount > 0) {
+            int indexLastItemFound = 0;
             selectedProducts = new Product[itemCount];
             for (int i = 0; i < selectedProducts.length; i++) {
-                for (int j = 0; j < products.length; j++) {
-                    if (products[i].getCategory() == category) {
+                for (int j = indexLastItemFound; j < products.length; j++) {
+                    if (products[j].getCategory() == category) {
                         selectedProducts[i] = products[j];
+                        indexLastItemFound = j + 1;
+                        break;
                     }
                 }
             }

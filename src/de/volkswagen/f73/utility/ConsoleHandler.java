@@ -7,6 +7,7 @@ import java.util.InputMismatchException;
 import java.util.Scanner;
 
 import de.volkswagen.f73.*;
+import de.volkswagen.f73.Product.Category;
 
 /**
  * 
@@ -56,8 +57,9 @@ public class ConsoleHandler {
             case "1":
                 productPage = 0;
                 String auswahl = "";
+                Category category = printCategory();
                 while (!auswahl.equals("x")) {
-                    auswahl = printProducts();
+                    auswahl = printProducts(category);
 //                    if (!auswahl.equals("n") && !auswahl.equals("v") && !auswahl.equals("x")) {
 //                        auswahl = sc.nextLine();
 //                    }
@@ -224,9 +226,9 @@ public class ConsoleHandler {
 
     }
 
-    private String printProducts() {
+    private String printProducts(Category category) {
         // Test
-        Product[] products = Storage.getProducts();
+        Product[] products = Storage.getProducts(category);
 
         Receipt[] receipts = customer.getReceipts();
         Receipt receipt = null;
@@ -607,6 +609,54 @@ public class ConsoleHandler {
         }
 
         return retCommand;
+    }
+    
+    private Category printCategory() {
+        final int staticLines = 9;
+        System.out.println(wholeLine('-', WIDTH, Alignment.CENTER, NO_BORDER));
+        System.out.println(stringToConsole("Kategorien", Alignment.CENTER, BORDER));
+
+        System.out.println(stringToConsole("0) Alle Produkte anzeigen", Alignment.LEFT, BORDER));
+        System.out.println(stringToConsole("1) Obst anzeigen", Alignment.LEFT, BORDER));
+        System.out.println(stringToConsole("2) Gemüse anzeigen", Alignment.LEFT, BORDER));
+        System.out.println(stringToConsole("3) Fleisch anzeigen", Alignment.LEFT, BORDER));
+        System.out.println(stringToConsole("4) Fisch anzeigen", Alignment.LEFT, BORDER));
+        System.out.println(stringToConsole("5) Milchprodukte anzeigen", Alignment.LEFT, BORDER));
+        System.out.println(stringToConsole("6) Brot anzeigen", Alignment.LEFT, BORDER));
+        System.out.println(stringToConsole("7) Getränke anzeigen", Alignment.LEFT, BORDER));
+        System.out.println(stringToConsole("8) Non-Food anzeigen", Alignment.LEFT, BORDER));
+
+//        String tempText = wholeLineMulti(' ', WIDTH - 2, Alignment.CENTER, BORDER,
+//                (int) (Math.floor((HEIGHT - staticLines) / 2.0)));
+//        if (!tempText.isEmpty()) {
+//            System.out.println(tempText);
+//        }
+//        tempText = wholeLineMulti(' ', WIDTH - 2, Alignment.CENTER, BORDER,
+//                (int) (Math.ceil((HEIGHT - staticLines) / 2.0)));
+//        if (!tempText.isEmpty()) {
+//            System.out.println(tempText);
+//        }
+
+        System.out.println(wholeLine('-', WIDTH, Alignment.CENTER, NO_BORDER));
+
+        Scanner sc = new Scanner(System.in);
+        String auswahl = "";
+        while (!auswahl.equals("0") && !auswahl.equals("1") && !auswahl.equals("2") && !auswahl.equals("3") && !auswahl.equals("4") && !auswahl.equals("5") && !auswahl.equals("6") && !auswahl.equals("7") && !auswahl.equals("8")) {
+            auswahl = sc.nextLine();
+        }
+        Category categoryToReturn = Category.NO_CATEGORY;
+        switch (auswahl) {
+        case "0": categoryToReturn = Category.NO_CATEGORY; break;
+        case "1": categoryToReturn = Category.FRUITS; break;
+        case "2": categoryToReturn = Category.VEGETABLES; break;
+        case "3": categoryToReturn = Category.MEAT; break;
+        case "4": categoryToReturn = Category.FISH; break;
+        case "5": categoryToReturn = Category.MILK_PRODUCTS; break;
+        case "6": categoryToReturn = Category.BREAD; break;
+        case "7": categoryToReturn = Category.DRINKS; break;
+        case "8": categoryToReturn = Category.NON_FOOD; break;
+        }
+        return categoryToReturn;
     }
 
     /**
