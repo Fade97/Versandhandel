@@ -85,18 +85,15 @@ public class ConsoleHandler {
                 receiptsPage = 0;
                 String auswahlReceipt = "";
                 while (!auswahlReceipt.equals("x")) {
-                    auswahlReceipt = printReceipts();
+                    auswahlReceipt = printReceipts(); //"n" oder "v" oder "x" oder "1000 - 1002"
 //                    if (!auswahl.equals("n") && !auswahl.equals("v") && !auswahl.equals("x")) {
 //                        auswahl = sc.nextLine();
 //                    }
-                    if (auswahlReceipt.equals("n")) {
-                        receiptsPage++;
-                    } else if (auswahlReceipt.equals("v") && receiptsPage > 0) {
-                        receiptsPage--;
-                    } else if (auswahlReceipt.equals("w")) {
-                        receiptsPage = 0;
+                    int receiptNr = 0;
+                    try {
+                        receiptNr = Integer.parseInt(auswahlReceipt);
                         while (!auswahlReceipt.equals("x")) {
-                            auswahlReceipt = printReceiptContent(selectedReceipt);
+                            auswahlReceipt = printReceiptContent(receiptNr);
                             if (auswahlReceipt.equals("n")) {
                                 receiptsPage++;
                             } else if (auswahlReceipt.equals("v") && receiptsPage > 0) {
@@ -104,6 +101,12 @@ public class ConsoleHandler {
                             }
                         }
                         auswahlReceipt = "";
+                    } catch (Exception e) {
+                        if (auswahlReceipt.equals("n")) {
+                            receiptsPage++;
+                        } else if (auswahlReceipt.equals("v") && receiptsPage > 0) {
+                            receiptsPage--;
+                        }
                     }
                 }
                 break;
@@ -415,7 +418,7 @@ public class ConsoleHandler {
         if (retCommand.equals("k")) {
             if (receipt.getTotalPrice() > 0.0) {
                 receipt.setPaid(true);
-
+                System.out.println("Rechnung mit der Nummer: " + receipt.getReceiptNr() + " wurde erstellt.");
             }
             retCommand = "x";
         }
@@ -500,7 +503,20 @@ public class ConsoleHandler {
 
         Scanner sc = new Scanner(System.in);
         String retCommand = sc.nextLine();
-
+        
+        
+        int selectedReceiptNr = 0;
+        try {
+            selectedReceiptNr = Integer.parseInt(retCommand) + 1000;
+            //Anpassen, aktuell nur eine Seite an Rechnungen möglich
+//            if (selectedIndex + productPage * productsPerPage < products.length && selectedIndex < productsPerPage) {
+//                Product p = products[selectedIndex + productPage * productsPerPage];
+//                receipt.addProductToCart(p, 1);
+//            }
+            retCommand = Integer.toString(selectedReceiptNr);
+        } catch (Exception e) {
+            
+        }
         return retCommand;
     }
 
@@ -547,7 +563,7 @@ public class ConsoleHandler {
         }
 
         System.out.println(wholeLine('-', WIDTH, Alignment.CENTER, NO_BORDER));
-        System.out.println(stringToConsole("Warenkorb", Alignment.CENTER, BORDER));
+        System.out.println(stringToConsole("Rechnung " + receiptNr, Alignment.CENTER, BORDER));
 
         // Products
         for (int i = 0; i < (HEIGHT - staticLines) && i + productPage * productsPerPage < products.length; i++) {
@@ -580,9 +596,9 @@ public class ConsoleHandler {
             sRight += " n) n\u00e4chste Seite";
         }
 
-        if (receipt.getNumberOfItems() > 0) {
-            sRight += " k) kaufen";
-        }
+//        if (receipt.getNumberOfItems() > 0) {
+//            sRight += " k) kaufen";
+//        }
         sRight += " x) zur\u00fcck";
         System.out.println(stringToConsole(sLeft + addPadding(sLeft.length(), sRight.length(), BORDER) + sRight,
                 Alignment.CENTER, BORDER));

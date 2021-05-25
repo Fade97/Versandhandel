@@ -9,7 +9,6 @@ public class Receipt {
     
     public Receipt() {
         this.receiptNr = 1000 + receiptNrCount++;
-        System.out.println(receiptNr);
     }
     
     public Receipt(int receiptNr) {
