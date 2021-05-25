@@ -626,17 +626,6 @@ public class ConsoleHandler {
         System.out.println(stringToConsole("7) Getränke anzeigen", Alignment.LEFT, BORDER));
         System.out.println(stringToConsole("8) Non-Food anzeigen", Alignment.LEFT, BORDER));
 
-//        String tempText = wholeLineMulti(' ', WIDTH - 2, Alignment.CENTER, BORDER,
-//                (int) (Math.floor((HEIGHT - staticLines) / 2.0)));
-//        if (!tempText.isEmpty()) {
-//            System.out.println(tempText);
-//        }
-//        tempText = wholeLineMulti(' ', WIDTH - 2, Alignment.CENTER, BORDER,
-//                (int) (Math.ceil((HEIGHT - staticLines) / 2.0)));
-//        if (!tempText.isEmpty()) {
-//            System.out.println(tempText);
-//        }
-
         System.out.println(wholeLine('-', WIDTH, Alignment.CENTER, NO_BORDER));
 
         Scanner sc = new Scanner(System.in);
