@@ -1,9 +1,6 @@
 package de.volkswagen.f73.utility;
 
-import java.nio.channels.SelectableChannel;
 import java.text.DecimalFormat;
-import java.util.IllegalFormatException;
-import java.util.InputMismatchException;
 import java.util.Scanner;
 
 import de.volkswagen.f73.*;
@@ -23,7 +20,6 @@ public class ConsoleHandler {
 
     private int productPage;
     private int receiptsPage;
-    private int selectedReceipt;
     private Customer customer;
     
     private Scanner sc;
@@ -474,7 +470,6 @@ public class ConsoleHandler {
 
     private String printReceipts() {
         Receipt[] receipts = customer.getReceipts();
-        Receipt receipt = null;
 
         DecimalFormat df = new DecimalFormat("#.##");
         int staticLines = 4;
@@ -557,11 +552,6 @@ public class ConsoleHandler {
                 selectedReceiptNr = thisReceipt.getReceiptNr();
                 
             }
-            // Anpassen, aktuell nur eine Seite an Rechnungen möglich
-//            if (selectedIndex + productPage * productsPerPage < products.length && selectedIndex < productsPerPage) {
-//                Product p = products[selectedIndex + productPage * productsPerPage];
-//                receipt.addProductToCart(p, 1);
-//            }
             retCommand = Integer.toString(selectedReceiptNr);
         } catch (Exception e) {
 
@@ -646,9 +636,6 @@ public class ConsoleHandler {
             sRight += " n) n\u00e4chste Seite";
         }
 
-//        if (receipt.getNumberOfItems() > 0) {
-//            sRight += " k) kaufen";
-//        }
         sRight += " x) zur\u00fcck";
         System.out.println(stringToConsole(sLeft + addPadding(sLeft.length(), sRight.length(), BORDER) + sRight,
                 Alignment.CENTER, BORDER));
@@ -661,7 +648,6 @@ public class ConsoleHandler {
     }
 
     private Category printCategory() {
-        final int staticLines = 3;
         System.out.println(wholeLine('-', WIDTH, Alignment.CENTER, NO_BORDER));
         System.out.println(stringToConsole("Kategorien", Alignment.CENTER, BORDER));
 
@@ -817,6 +803,11 @@ public class ConsoleHandler {
         return retText;
     }
 
+    /**
+     * Returns a String filled with the desired amount of white spaces
+     * @param amountOfPadding - amount of white spaces to add
+     * @return String containing the padding
+     */
     private String addPadding(int amountOfPadding) {
         String retText = "";
         for (int i = 0; i < amountOfPadding; i++) {
@@ -825,6 +816,13 @@ public class ConsoleHandler {
         return retText;
     }
 
+    /**
+     * Returns a String filled with white spaces. The amount matches the difference between the total {@link WIDTH} allowed and the supplied character counts
+     * @param leftCharCnt - amount of chars on the left side of the padding
+     * @param rightCharCnt - amount of chars on the right side of the padding
+     * @param hasBorder - whether the line needs to have a border
+     * @return String containing the padding
+     */
     private String addPadding(int leftCharCnt, int rightCharCnt, boolean hasBorder) {
         String retText = "";
         int cnt = WIDTH - rightCharCnt - leftCharCnt;
@@ -838,9 +836,6 @@ public class ConsoleHandler {
     }
 
     private void printError(String errorMessage) {
-        /**
-         * |--------------------------| | Error | |--------------------------|
-         */
         System.err.println(wholeLine('-', WIDTH, Alignment.CENTER, NO_BORDER));
 
         String tempText = wholeLineMulti(' ', WIDTH - 2, Alignment.CENTER, BORDER,
