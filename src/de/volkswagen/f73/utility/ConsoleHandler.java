@@ -83,6 +83,7 @@ public class ConsoleHandler {
                 break;
             case "2":
                 receiptsPage = 0;
+                productPage = 0;
                 String auswahlReceipt = "";
                 while (!auswahlReceipt.equals("x")) {
                     auswahlReceipt = printReceipts(); //"n" oder "v" oder "x" oder "1000 - 1002"
@@ -95,9 +96,9 @@ public class ConsoleHandler {
                         while (!auswahlReceipt.equals("x")) {
                             auswahlReceipt = printReceiptContent(receiptNr);
                             if (auswahlReceipt.equals("n")) {
-                                receiptsPage++;
-                            } else if (auswahlReceipt.equals("v") && receiptsPage > 0) {
-                                receiptsPage--;
+                                productPage++;
+                            } else if (auswahlReceipt.equals("v") && productPage > 0) {
+                                productPage--;
                             }
                         }
                         auswahlReceipt = "";
@@ -431,7 +432,7 @@ public class ConsoleHandler {
         Receipt receipt = null;
 
         DecimalFormat df = new DecimalFormat("#.##");
-        int staticLines = 4;
+        int staticLines = 5;
         int receiptsPerPage = (HEIGHT - staticLines);
         if (receipts != null) {
             Receipt[] tempReceipts = receipts;
@@ -592,6 +593,7 @@ public class ConsoleHandler {
         if (productPage + 1 != 1) {
             sRight += "v) vorherige";
         }
+
         if (((int) Math.ceil(products.length / (HEIGHT - staticLines * 1.0))) != productPage + 1) {
             sRight += " n) n\u00e4chste Seite";
         }
