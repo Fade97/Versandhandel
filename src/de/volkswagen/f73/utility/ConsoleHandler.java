@@ -25,6 +25,8 @@ public class ConsoleHandler {
     private int receiptsPage;
     private int selectedReceipt;
     private Customer customer;
+    
+    private Scanner sc;
 
     /**
      * Possible alignment options
@@ -37,12 +39,8 @@ public class ConsoleHandler {
     }
 
     public void start() {
-        // Willkommen
-        // Login / Register
-        // while
-        // Produkte anzeigen
-        // Produkt auswï¿½hlen
-
+        sc = new Scanner(System.in);
+        
         printWelcome();
         if (!printLogin()) {
             printRegister();
@@ -53,7 +51,6 @@ public class ConsoleHandler {
             switch (menuAuswahl) {
             case "0":
                 printAccount();
-                Scanner sc = new Scanner(System.in);
                 sc.nextLine();
                 
                 break;
@@ -114,6 +111,7 @@ public class ConsoleHandler {
             }
 
         } while (!menuAuswahl.equals("x"));
+        sc.close();
     }
 
     private void printWelcome() {
@@ -156,7 +154,6 @@ public class ConsoleHandler {
         System.out.println(wholeLine('-', WIDTH, Alignment.CENTER, NO_BORDER));
 
         System.out.print("Bitte KundenNr eingeben: ");
-        Scanner sc = new Scanner(System.in);
         String kundenNr = sc.nextLine();
         UserManagement manager = UserManagement.instance();
         Customer c = manager.getUser(kundenNr);
@@ -202,7 +199,6 @@ public class ConsoleHandler {
         // public Customer(String firstName, String lastName, String street, String
         // houseNr, String zipCode, String City)
 
-        try (Scanner sc = new Scanner(System.in)) {
             System.out.println("Bitte Vornamen eingeben:");
             String firstName = sc.nextLine();
 
@@ -224,9 +220,7 @@ public class ConsoleHandler {
             Customer c = new Customer(firstName, lastName, street, houseNr, zipCode, City);
             UserManagement.instance().addUser(c);
             customer = c;
-        } catch (Exception e) {
-            System.err.println("Es ist ein Fehler beim Einlesen des Userinputs aufgetreten");
-        }
+
 
         return false;
     }
@@ -258,7 +252,6 @@ public class ConsoleHandler {
         System.out.println(stringToConsole("x) beenden", Alignment.RIGHT, BORDER));
         System.out.println(wholeLine('-', WIDTH, Alignment.CENTER, NO_BORDER));
 
-        Scanner sc = new Scanner(System.in);
         String auswahl = "";
         while (!auswahl.equals("x") && !auswahl.equals("0") && !auswahl.equals("1") && !auswahl.equals("2")) {
             auswahl = sc.nextLine();
@@ -281,7 +274,7 @@ public class ConsoleHandler {
     }
 
     private void printEditAccount() {
-
+        
     }
 
     private String printProducts(Category category) {
@@ -359,7 +352,6 @@ public class ConsoleHandler {
         System.out.println(wholeLine('-', WIDTH, Alignment.CENTER, NO_BORDER));
 
         // Product selection
-        Scanner sc = new Scanner(System.in);
         retCommand = sc.nextLine();
         try {
             int selectedIndex = Integer.parseInt(retCommand);
@@ -457,7 +449,6 @@ public class ConsoleHandler {
                 Alignment.CENTER, BORDER));
         System.out.println(wholeLine('-', WIDTH, Alignment.CENTER, NO_BORDER));
 
-        Scanner sc = new Scanner(System.in);
         String retCommand = sc.nextLine();
         
         try {
@@ -486,7 +477,7 @@ public class ConsoleHandler {
         Receipt receipt = null;
 
         DecimalFormat df = new DecimalFormat("#.##");
-        int staticLines = 5;
+        int staticLines = 4;
         int receiptsPerPage = (HEIGHT - staticLines);
         if (receipts != null) {
             Receipt[] tempReceipts = receipts;
@@ -556,13 +547,16 @@ public class ConsoleHandler {
                 Alignment.CENTER, BORDER));
         System.out.println(wholeLine('-', WIDTH, Alignment.CENTER, NO_BORDER));
 
-        Scanner sc = new Scanner(System.in);
         String retCommand = sc.nextLine();
         
 
         int selectedReceiptNr = 0;
         try {
-            selectedReceiptNr = Integer.parseInt(retCommand) + 1000;
+            Receipt thisReceipt = receipts[receiptsPerPage * receiptsPage + Integer.parseInt(retCommand)];
+            if(thisReceipt != null) {
+                selectedReceiptNr = thisReceipt.getReceiptNr();
+                
+            }
             // Anpassen, aktuell nur eine Seite an Rechnungen möglich
 //            if (selectedIndex + productPage * productsPerPage < products.length && selectedIndex < productsPerPage) {
 //                Product p = products[selectedIndex + productPage * productsPerPage];
@@ -660,26 +654,8 @@ public class ConsoleHandler {
                 Alignment.CENTER, BORDER));
         System.out.println(wholeLine('-', WIDTH, Alignment.CENTER, NO_BORDER));
 
-        Scanner sc = new Scanner(System.in);
         String retCommand = sc.nextLine();
         
-        try {
-            int selectedIndex = Integer.parseInt(retCommand);
-            if (selectedIndex + productPage * productsPerPage < products.length && selectedIndex < productsPerPage) {
-                Product p = products[selectedIndex + productPage * productsPerPage];
-                System.out.println(p.getName() + " - 1");
-                receipt.removeProductFromCart(p, 1);
-            }
-        } catch (Exception e) {
-
-        }
-        if (retCommand.equals("k")) {
-            if (receipt.getTotalPrice() > 0.0) {
-                receipt.setPaid(true);
-
-            }
-            retCommand = "x";
-        }
 
         return retCommand;
     }
@@ -701,7 +677,6 @@ public class ConsoleHandler {
 
         System.out.println(wholeLine('-', WIDTH, Alignment.CENTER, NO_BORDER));
 
-        Scanner sc = new Scanner(System.in);
         String auswahl = "";
         while (!auswahl.equals("0") && !auswahl.equals("1") && !auswahl.equals("2") && !auswahl.equals("3")
                 && !auswahl.equals("4") && !auswahl.equals("5") && !auswahl.equals("6") && !auswahl.equals("7")

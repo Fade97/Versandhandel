@@ -12,7 +12,7 @@ import java.util.Locale.Category;
 import de.volkswagen.f73.*;
 
 public class CsvHandler {
-    static String fileName = "Export.csv";
+    static String fileName = "Customer.csv";
     static String fileNameReceipt = "Receipts.csv";
     static String fileNameProducts = "Products.csv";
     static final String delimiter = ";";
