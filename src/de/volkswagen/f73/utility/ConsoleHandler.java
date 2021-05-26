@@ -16,7 +16,7 @@ import de.volkswagen.f73.Product.Category;
 public class ConsoleHandler {
 
     private static final int WIDTH = 55;
-    private static final int HEIGHT = 11;
+    private static final int HEIGHT = 12;
 
     private static final boolean BORDER = true;
     private static final boolean NO_BORDER = false;
@@ -42,17 +42,20 @@ public class ConsoleHandler {
         // while
         // Produkte anzeigen
         // Produkt auswï¿½hlen
-        Scanner sc = new Scanner(System.in);
 
         printWelcome();
-        printLogin();
+        if (!printLogin()) {
+            printRegister();
+        }
         String menuAuswahl = "";
         do {
             menuAuswahl = printMenu();
             switch (menuAuswahl) {
             case "0":
                 printAccount();
+                Scanner sc = new Scanner(System.in);
                 sc.nextLine();
+                
                 break;
             case "1":
                 productPage = 0;
@@ -60,9 +63,6 @@ public class ConsoleHandler {
                 Category category = printCategory();
                 while (!auswahl.equals("x")) {
                     auswahl = printProducts(category);
-//                    if (!auswahl.equals("n") && !auswahl.equals("v") && !auswahl.equals("x")) {
-//                        auswahl = sc.nextLine();
-//                    }
                     if (auswahl.equals("n")) {
                         productPage++;
                     } else if (auswahl.equals("v") && productPage > 0) {
@@ -86,10 +86,7 @@ public class ConsoleHandler {
                 productPage = 0;
                 String auswahlReceipt = "";
                 while (!auswahlReceipt.equals("x")) {
-                    auswahlReceipt = printReceipts(); //"n" oder "v" oder "x" oder "1000 - 1002"
-//                    if (!auswahl.equals("n") && !auswahl.equals("v") && !auswahl.equals("x")) {
-//                        auswahl = sc.nextLine();
-//                    }
+                    auswahlReceipt = printReceipts();
                     int receiptNr = 0;
                     try {
                         receiptNr = Integer.parseInt(auswahlReceipt);
@@ -117,7 +114,6 @@ public class ConsoleHandler {
             }
 
         } while (!menuAuswahl.equals("x"));
-
     }
 
     private void printWelcome() {
@@ -144,12 +140,57 @@ public class ConsoleHandler {
         System.out.println(wholeLine('-', WIDTH, Alignment.CENTER, NO_BORDER));
 
         String tempText = wholeLineMulti(' ', WIDTH - 2, Alignment.CENTER, BORDER,
-                (int) (Math.floor((HEIGHT - 3) / 2.0)));
+                (int) (Math.floor((HEIGHT - 4) / 2.0)));
         if (!tempText.isEmpty()) {
             System.out.println(tempText);
         }
 
         System.out.println(stringToConsole("Login", Alignment.CENTER, BORDER));
+
+        tempText = wholeLineMulti(' ', WIDTH - 2, Alignment.CENTER, BORDER, (int) (Math.ceil((HEIGHT - 4) / 2.0)));
+        if (!tempText.isEmpty()) {
+            System.out.println(tempText);
+        }
+
+        System.out.println(stringToConsole("r) Registrieren", Alignment.RIGHT, BORDER));
+        System.out.println(wholeLine('-', WIDTH, Alignment.CENTER, NO_BORDER));
+
+        System.out.print("Bitte KundenNr eingeben: ");
+        Scanner sc = new Scanner(System.in);
+        String kundenNr = sc.nextLine();
+        UserManagement manager = UserManagement.instance();
+        Customer c = manager.getUser(kundenNr);
+        boolean needsToRegister = false;
+
+        if (kundenNr.equals("r")) {
+            needsToRegister = true;
+        }
+
+        while (c == null && !needsToRegister) {
+            System.out.print("KundenNr nicht vorhanden! Bitte erneut versuchen: ");
+            kundenNr = sc.nextLine();
+            if (kundenNr.equals("r")) {
+                needsToRegister = true;
+            }
+            manager = UserManagement.instance();
+            c = manager.getUser(kundenNr);
+        }
+        //
+        this.customer = c;
+
+        return !needsToRegister;
+    }
+
+    private boolean printRegister() {
+        System.out.println(wholeLine('-', WIDTH, Alignment.CENTER, NO_BORDER));
+
+        String tempText = wholeLineMulti(' ', WIDTH - 2, Alignment.CENTER, BORDER,
+                (int) (Math.floor((HEIGHT - 3) / 2.0)));
+        if (!tempText.isEmpty()) {
+            System.out.println(tempText);
+        }
+
+        System.out.println(stringToConsole("Registrieren", Alignment.CENTER, BORDER));
 
         tempText = wholeLineMulti(' ', WIDTH - 2, Alignment.CENTER, BORDER, (int) (Math.ceil((HEIGHT - 3) / 2.0)));
         if (!tempText.isEmpty()) {
@@ -158,23 +199,35 @@ public class ConsoleHandler {
 
         System.out.println(wholeLine('-', WIDTH, Alignment.CENTER, NO_BORDER));
 
-        System.out.print("Bitte KundenNr eingeben: ");
-        Scanner sc = new Scanner(System.in);
-        String kundenNr = sc.nextLine();
-        UserManagement manager = UserManagement.instance();
-        Customer c = manager.getUser(kundenNr);
-        while (c == null) {
-            System.out.print("KundenNr nicht vorhanden! Bitte erneut versuchen: ");
-            kundenNr = sc.nextLine();
-            manager = UserManagement.instance();
-            c = manager.getUser(kundenNr);
+        // public Customer(String firstName, String lastName, String street, String
+        // houseNr, String zipCode, String City)
+
+        try (Scanner sc = new Scanner(System.in)) {
+            System.out.println("Bitte Vornamen eingeben:");
+            String firstName = sc.nextLine();
+
+            System.out.println("Bitte Nachname eingeben:");
+            String lastName = sc.nextLine();
+
+            System.out.println("Bitte Strasse eingeben:");
+            String street = sc.nextLine();
+
+            System.out.println("Bitte Hausnummer eingeben:");
+            String houseNr = sc.nextLine();
+
+            System.out.println("Bitte Plz eingeben:");
+            String zipCode = sc.nextLine();
+
+            System.out.println("Bitte Stadt eingeben:");
+            String City = sc.nextLine();
+
+            Customer c = new Customer(firstName, lastName, street, houseNr, zipCode, City);
+            UserManagement.instance().addUser(c);
+            customer = c;
+        } catch (Exception e) {
+            System.err.println("Es ist ein Fehler beim Einlesen des Userinputs aufgetreten");
         }
-        this.customer = c;
 
-        return false;
-    }
-
-    private boolean printRegister() {
         return false;
     }
 
@@ -210,6 +263,7 @@ public class ConsoleHandler {
         while (!auswahl.equals("x") && !auswahl.equals("0") && !auswahl.equals("1") && !auswahl.equals("2")) {
             auswahl = sc.nextLine();
         }
+        
         return auswahl;
     }
 
@@ -316,7 +370,7 @@ public class ConsoleHandler {
         } catch (Exception e) {
 
         }
-
+        
         return retCommand;
     }
 
@@ -369,9 +423,8 @@ public class ConsoleHandler {
         for (int i = 0; i < (HEIGHT - staticLines) && i + productPage * productsPerPage < products.length; i++) {
             Product thisProduct = products[i + productPage * (HEIGHT - staticLines)];
             String left = "" + i + ") " + thisProduct.getName() + " x" + thisProduct.getQuantity();
-            String right = df.format(Receipt
-                    .calculateGrossPrice(thisProduct.getPrice() * thisProduct.getQuantity(), thisProduct.getTax()))
-                    + "\u20AC";
+            String right = df.format(Receipt.calculateGrossPrice(thisProduct.getPrice() * thisProduct.getQuantity(),
+                    thisProduct.getTax())) + "\u20AC";
             System.out.println(stringToConsole(left + addPadding(left.length(), right.length(), BORDER) + right,
                     Alignment.LEFT, BORDER));
         }
@@ -406,6 +459,7 @@ public class ConsoleHandler {
 
         Scanner sc = new Scanner(System.in);
         String retCommand = sc.nextLine();
+        
         try {
             int selectedIndex = Integer.parseInt(retCommand);
             if (selectedIndex + productPage * productsPerPage < products.length && selectedIndex < productsPerPage) {
@@ -450,7 +504,7 @@ public class ConsoleHandler {
                     j++;
                 }
             }
-            
+
             while (receipts.length - ((receiptsPage) * receiptsPerPage) <= 0) {
                 if (receiptsPage <= 0) {
                     break;
@@ -505,18 +559,18 @@ public class ConsoleHandler {
         Scanner sc = new Scanner(System.in);
         String retCommand = sc.nextLine();
         
-        
+
         int selectedReceiptNr = 0;
         try {
             selectedReceiptNr = Integer.parseInt(retCommand) + 1000;
-            //Anpassen, aktuell nur eine Seite an Rechnungen möglich
+            // Anpassen, aktuell nur eine Seite an Rechnungen möglich
 //            if (selectedIndex + productPage * productsPerPage < products.length && selectedIndex < productsPerPage) {
 //                Product p = products[selectedIndex + productPage * productsPerPage];
 //                receipt.addProductToCart(p, 1);
 //            }
             retCommand = Integer.toString(selectedReceiptNr);
         } catch (Exception e) {
-            
+
         }
         return retCommand;
     }
@@ -608,6 +662,7 @@ public class ConsoleHandler {
 
         Scanner sc = new Scanner(System.in);
         String retCommand = sc.nextLine();
+        
         try {
             int selectedIndex = Integer.parseInt(retCommand);
             if (selectedIndex + productPage * productsPerPage < products.length && selectedIndex < productsPerPage) {
@@ -628,9 +683,9 @@ public class ConsoleHandler {
 
         return retCommand;
     }
-    
+
     private Category printCategory() {
-        final int staticLines = 9;
+        final int staticLines = 3;
         System.out.println(wholeLine('-', WIDTH, Alignment.CENTER, NO_BORDER));
         System.out.println(stringToConsole("Kategorien", Alignment.CENTER, BORDER));
 
@@ -648,20 +703,41 @@ public class ConsoleHandler {
 
         Scanner sc = new Scanner(System.in);
         String auswahl = "";
-        while (!auswahl.equals("0") && !auswahl.equals("1") && !auswahl.equals("2") && !auswahl.equals("3") && !auswahl.equals("4") && !auswahl.equals("5") && !auswahl.equals("6") && !auswahl.equals("7") && !auswahl.equals("8")) {
+        while (!auswahl.equals("0") && !auswahl.equals("1") && !auswahl.equals("2") && !auswahl.equals("3")
+                && !auswahl.equals("4") && !auswahl.equals("5") && !auswahl.equals("6") && !auswahl.equals("7")
+                && !auswahl.equals("8")) {
             auswahl = sc.nextLine();
         }
+        
         Category categoryToReturn = Category.NO_CATEGORY;
         switch (auswahl) {
-        case "0": categoryToReturn = Category.NO_CATEGORY; break;
-        case "1": categoryToReturn = Category.FRUITS; break;
-        case "2": categoryToReturn = Category.VEGETABLES; break;
-        case "3": categoryToReturn = Category.MEAT; break;
-        case "4": categoryToReturn = Category.FISH; break;
-        case "5": categoryToReturn = Category.MILK_PRODUCTS; break;
-        case "6": categoryToReturn = Category.BREAD; break;
-        case "7": categoryToReturn = Category.DRINKS; break;
-        case "8": categoryToReturn = Category.NON_FOOD; break;
+        case "0":
+            categoryToReturn = Category.NO_CATEGORY;
+            break;
+        case "1":
+            categoryToReturn = Category.FRUITS;
+            break;
+        case "2":
+            categoryToReturn = Category.VEGETABLES;
+            break;
+        case "3":
+            categoryToReturn = Category.MEAT;
+            break;
+        case "4":
+            categoryToReturn = Category.FISH;
+            break;
+        case "5":
+            categoryToReturn = Category.MILK_PRODUCTS;
+            break;
+        case "6":
+            categoryToReturn = Category.BREAD;
+            break;
+        case "7":
+            categoryToReturn = Category.DRINKS;
+            break;
+        case "8":
+            categoryToReturn = Category.NON_FOOD;
+            break;
         }
         return categoryToReturn;
     }
